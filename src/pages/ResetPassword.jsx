@@ -34,14 +34,14 @@ const ResetPassword = () => {
                         <InputLabel htmlFor="password" >
                             New password
                         </InputLabel>
-                        <InputPassword id='password' showPassword={showPassword} handleClickShowPassword={handleClickShowPassword} register={register} />
+                        <InputPassword id='password' size="small" showPassword={showPassword} handleClickShowPassword={handleClickShowPassword} register={register} />
                     </Grid>
 
                     <Grid size={{ xs: 12 }}>
                         <InputLabel htmlFor="confirmPassword" >
                             Confirm new Password
                         </InputLabel>
-                        <InputPassword id='confirmPassword' showPassword={showPassword} handleClickShowPassword={handleClickShowPassword} register={register} />
+                        <InputPassword id='confirmPassword' size="small" showPassword={showPassword} handleClickShowPassword={handleClickShowPassword} register={register} />
 
                     </Grid>
                     {/* <FormHelperText error>{formErrors}</FormHelperText> */}

@@ -17,7 +17,11 @@ import Users from "./pages/Users"
 import Certificates from "./pages/Certificates"
 import theme from "./utils/theme"
 import { ThemeProvider } from "@emotion/react"
-
+import { QueryClientProvider } from "@tanstack/react-query"
+import { Provider } from "react-redux"
+import { DialogsProvider, NotificationsProvider } from "@toolpad/core"
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import store from './store'
 
 // const PageNotFound = lazy(() => import("./pages/PageNotFound"));
 // const Login = lazy(() => import("./pages/Login"));
@@ -32,73 +36,82 @@ import { ThemeProvider } from "@emotion/react"
 function App() {
   return (
     <ThemeProvider theme={theme} >
-      <BrowserRouter >
-        <Routes>
-          <Route element=
-            {
+      {/* <QueryClientProvider client={queryClient}> */}
+      <Provider store={store}>
+        <NotificationsProvider>
+          <DialogsProvider>
+            <BrowserRouter >
+              <Routes>
+                <Route element=
+                  {
 
-              <PrivateRoute checkAuth="true" >
-                <AppLayout />
-              </PrivateRoute>
-            }
-          >
-            {/* Global Routes */}
+                    <PrivateRoute checkAuth="true" >
+                      <AppLayout />
+                    </PrivateRoute>
+                  }
+                >
+                  {/* Global Routes */}
 
-            <Route index element={<Navigate replace to="dashboard" />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="account" element={<Account />} />
-            <Route path="courses" element={<Courses />} />
-            <Route path="course">
-              <Route index element={<Course />} />
-              <Route path="quiz/:quizId" element={<Quiz />} />
-            </Route>
+                  <Route index element={<Navigate replace to="dashboard" />} />
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path="courses" element={<Courses />} />
+                  <Route path="course">
+                    <Route index element={<Course />} />
+                    <Route path="quiz/:quizId" element={<Quiz />} />
+                  </Route>
 
 
-            {/* Staff routes */}
-            <Route element=
-              {
-                <PrivateRoute allowedRoles={['Staff']} />
-              }
-            >
-              <Route path="my-certificates" element={<MyCertificates />} />
-            </Route>
+                  {/* Staff routes */}
+                  <Route element=
+                    {
+                      <PrivateRoute allowedRoles={['Staff']} />
+                    }
+                  >
+                    <Route path="my-certificates" element={<MyCertificates />} />
+                  </Route>
 
-            {/* Admin routes */}
-            <Route element=
-              {
-                <PrivateRoute allowedRoles={['Admin']} />
-              }
-            >
-              <Route path="users" element={<Users />} />
-            </Route>
+                  {/* Admin routes */}
+                  <Route element=
+                    {
+                      <PrivateRoute allowedRoles={['Admin']} />
+                    }
+                  >
+                    <Route path="users" element={<Users />} />
+                  </Route>
 
-            {/* SubAdmin & Staff routes */}
-            <Route element=
-              {
-                <PrivateRoute allowedRoles={['SubAdmin']} />
-              }
-            >
-              <Route path="my-courses" element={<MyCourses />} />
-            </Route>
+                  {/* SubAdmin & Staff routes */}
+                  <Route element=
+                    {
+                      <PrivateRoute allowedRoles={['SubAdmin']} />
+                    }
+                  >
+                    <Route path="my-courses" element={<MyCourses />} />
+                  </Route>
 
-            {/* SubAdmin & Admin routes */}
-            <Route element=
-              {
-                <PrivateRoute allowedRoles={['Admin', 'SubAdmin']} />
-              }
-            >
-              <Route path="certificates" Component={Certificates} />
-            </Route>
+                  {/* SubAdmin & Admin routes */}
+                  <Route element=
+                    {
+                      <PrivateRoute allowedRoles={['Admin', 'SubAdmin']} />
+                    }
+                  >
+                    <Route path="certificates" Component={Certificates} />
+                  </Route>
 
-          </Route>
-          {/* Guest Routes */}
-          <Route path="login" element={<Login />} />
-          <Route path="forgot-password" element={<ForgotPassword />} />
-          <Route path="reset-password" element={<ResetPassword />} />
-          <Route path="*" element={<PageNotFound />} />
+                </Route>
+                {/* Guest Routes */}
+                <Route path="login" element={<Login />} />
+                <Route path="forgot-password" element={<ForgotPassword />} />
+                <Route path="reset-password" element={<ResetPassword />} />
+                <Route path="*" element={<PageNotFound />} />
 
-        </Routes>
-      </BrowserRouter>
+              </Routes>
+            </BrowserRouter>
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          </DialogsProvider>
+        </NotificationsProvider>
+      </Provider>
+      {/* </QueryClientProvider> */}
     </ThemeProvider>
   )
 }

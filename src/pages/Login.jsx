@@ -1,26 +1,25 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Navigate, Link as RouterLink } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 import VpnKey from "@mui/icons-material/VpnKey"
-import VisibilityOff from "@mui/icons-material/VisibilityOff"
-import Visibility from "@mui/icons-material/Visibility"
-import { Box, Button, Checkbox, FormControlLabel, Grid2 as Grid, IconButton, InputAdornment, Link, TextField, Typography } from "@mui/material"
+
+import { Box, Button, Checkbox, FormControlLabel, Grid2 as Grid, Link, TextField, Typography } from "@mui/material"
 
 import logo from '../images/logo.jpg'
 import { useAuth } from "../hooks/useAuth";
-import { useNotifications } from "@toolpad/core";
 import InputPassword from "../ui/InputPassword";
 
 const Login = () => {
-    const notifications = useNotifications()
-
     const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
 
     const { loginUser, isAuthenticated, error: authError } = useAuth();
     const [showPassword, setShowPassword] = useState(false)
 
 
+
     const onLogin = async (data) => {
+        console.log('Login');
+
         loginUser(data)
     };
 
@@ -28,21 +27,6 @@ const Login = () => {
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
-
-
-
-    useEffect(() => {
-        if (authError) {
-            var key = notifications.show(authError, {
-                severity: 'error',
-                autoHideDuration: 4000,
-            })
-        }
-        return () => {
-            notifications.close(key)
-        }
-    })
-
     if (isAuthenticated) {
         return <Navigate replace to="/" />
     }
