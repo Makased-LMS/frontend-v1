@@ -1,32 +1,31 @@
 import { useState } from "react"
 import { Navigate, Link as RouterLink } from 'react-router-dom'
 import { useForm } from "react-hook-form";
-import VpnKey from "@mui/icons-material/VpnKey"
 
 import { Box, Button, Checkbox, FormControlLabel, Grid2 as Grid, Link, TextField, Typography } from "@mui/material"
+import VpnKey from "@mui/icons-material/VpnKey"
+
+import InputPassword from "../ui/InputPassword";
+import { useUser } from "../features/authentication/useUser";
+import { useLogin } from "../features/authentication/useLogin";
 
 import logo from '../images/logo.jpg'
-import { useAuth } from "../hooks/useAuth";
-import InputPassword from "../ui/InputPassword";
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
-
-    const { loginUser, isAuthenticated, error: authError } = useAuth();
     const [showPassword, setShowPassword] = useState(false)
 
-
-
-    const onLogin = async (data) => {
-        console.log('Login');
-
-        loginUser(data)
-    };
-
+    const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
+    const { isAuthenticated } = useUser();
+    const { login } = useLogin();
 
     const handleClickShowPassword = () => {
         setShowPassword((prev) => !prev);
     };
+
+    const onLogin = async (data) => {
+        login(data)
+    };
+
     if (isAuthenticated) {
         return <Navigate replace to="/" />
     }
