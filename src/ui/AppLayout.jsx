@@ -42,7 +42,7 @@ const AppLayout = () => {
         return {
             id: user.workId,
             email: user.email,
-            name: user.userName,
+            name: user.firstName + ' ' + user.lastName,
             image: user.image
         }
     }, [user])
