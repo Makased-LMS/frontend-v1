@@ -39,7 +39,7 @@ export async function resetPassword(workId, token, newPassword) {
 }
 
 export async function forgotPassword(workId) {
-    const response = await fetch(`${API_URL}/identity/forgot-password`, {
+    return await fetch(`${API_URL}/identity/forgot-password`, {
         method: 'POST',
         body: JSON.stringify({
             workId
@@ -48,15 +48,52 @@ export async function forgotPassword(workId) {
             'Content-type': 'application/json'
         }
     })
+}
 
-    return response;
+export async function fetchUser(id, accessToken) {
+
+    return await fetch(`${API_URL}/identity/users/${id}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-type': 'application/json'
+        }
+    })
+}
+
+async function refreshTokenAndRetry(originalRequest) {
+    try {
+        const response = await fetch(`${API_URL}/identity/refresh-token`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to refresh token');
+        }
+
+        const data = await response.json();
+        Cookies.setItem('accessToken', data.accessToken);
+
+        return await originalRequest();
+    } catch (error) {
+        console.error('Token refresh failed:', error);
+    }
 }
 
 export async function getCurrentUser() {
-    const token = Cookies.get('accessToken');
-    if (!token) return null;
+    const accessToken = Cookies.get('accessToken');
 
-    const user = convertToJson(token)
+    if (!accessToken) return null;
 
-    return user;
+    const user = convertToJson(accessToken)
+
+    const response = await fetchUser(user.id, accessToken)
+
+    if (!response.ok) {
+        refreshTokenAndRetry(getCurrentUser);
+    }
+
+    const data = await response.json();
+    return data;
 }

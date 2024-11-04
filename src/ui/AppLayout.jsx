@@ -38,6 +38,15 @@ const AppLayout = () => {
         };
     }, [logout]);
 
+    const dashboardUser = useMemo(() => {
+        return {
+            id: user.workId,
+            email: user.email,
+            name: user.userName,
+            image: user.image
+        }
+    }, [user])
+
 
     return (
         <AppProvider
@@ -49,7 +58,9 @@ const AppLayout = () => {
             router={router}
             authentication={authentication}
             theme={theme}
-            session={{ user }}
+            session={{
+                user: dashboardUser
+            }}
         >
             <DashboardLayout>
                 <Outlet />

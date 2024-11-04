@@ -10,7 +10,6 @@ export const convertToJson = (token) => {
             newKey[0] = 'email';
         if (newKey[0] === 'nameidentifier')
             newKey[0] = 'id'
-        console.log(newKey)
         newToken[newKey] = decoded[key];
     });
     return newToken;

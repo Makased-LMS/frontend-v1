@@ -18,6 +18,7 @@ import Users from "./pages/Users"
 import Certificates from "./pages/Certificates"
 
 import PrivateRoute from "./ui/PrivateRoute"
+import PublicRoute from "./ui/PublicRoute"
 import AppLayout from "./ui/AppLayout"
 
 import Course from './features/courses/Course'
@@ -99,7 +100,7 @@ function App() {
                     {/* SubAdmin & Staff routes */}
                     <Route element=
                       {
-                        <PrivateRoute allowedRoles={['SubAdmin']} />
+                        <PrivateRoute allowedRoles={['SubAdmin', 'Staff']} />
                       }
                     >
                       <Route path="my-courses" element={<MyCourses />} />
@@ -116,11 +117,16 @@ function App() {
                   </Route>
 
                   {/* Guest Routes */}
-                  <Route path="login" element={<Login />} />
-                  <Route path="forgot-password" element={<ForgotPassword />} />
-                  <Route path="reset-password" element={<ResetPassword />} />
-                  <Route path="*" element={<PageNotFound />} />
-
+                  <Route element=
+                    {
+                      <PublicRoute />
+                    }
+                  >
+                    <Route path="login" element={<Login />} />
+                    <Route path="forgot-password" element={<ForgotPassword />} />
+                    <Route path="reset-password" element={<ResetPassword />} />
+                    <Route path="*" element={<PageNotFound />} />
+                  </Route>
                 </Routes>
               </BrowserRouter>
               <ReactQueryDevtools initialIsOpen={false} />
