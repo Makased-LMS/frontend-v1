@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export async function login({ workId, password, rememberUser }) {
+export async function login({ workId, password, rememberUser }) { //TODO: authorzation using BE credentials
     const response = await fetch(`${API_URL}/identity/login`, {
         method: 'POST',
         body: JSON.stringify({
@@ -61,7 +61,7 @@ export async function fetchUser(id, accessToken) {
     })
 }
 
-async function refreshTokenAndRetry(originalRequest) {
+async function refreshTokenAndRetry(originalRequest) { //TODO: authorzation using BE credentials
     try {
         const response = await fetch(`${API_URL}/identity/refresh-token`, {
             method: 'POST',
@@ -91,7 +91,10 @@ export async function getCurrentUser() {
     const response = await fetchUser(user.id, accessToken)
 
     if (!response.ok) {
-        refreshTokenAndRetry(getCurrentUser);
+        // refreshTokenAndRetry(getCurrentUser);
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
+        return null;
     }
 
     const data = await response.json();
