@@ -7,6 +7,7 @@ const handleTokens = () => {
     }
 
     const updateTokens = (accessToken, refreshToken, rememberUser = true) => {
+        clearTokens();
         Cookies.set('accessToken', accessToken, {
             expires: rememberUser ? 30 : 60 / 1440, // 60 mins from BE
             secure: true,

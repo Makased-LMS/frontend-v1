@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { Suspense, useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import { AppProvider } from '@toolpad/core/react-router-dom'
@@ -9,6 +9,8 @@ import navigation from '../utils/navigation.jsx'
 
 import { useUser } from '../features/authentication/useUser.js'
 import { useLogout } from '../features/authentication/useLogout.js'
+
+import SpinnerLoader from './SpinnerLoader.jsx'
 
 import logo from '../images/logo.jpg'
 
@@ -47,7 +49,9 @@ const AppLayout = () => {
             }}
         >
             <DashboardLayout>
-                <Outlet />
+                <Suspense fallback={<SpinnerLoader />}>
+                    <Outlet />
+                </Suspense>
             </DashboardLayout>
         </AppProvider>
     )
