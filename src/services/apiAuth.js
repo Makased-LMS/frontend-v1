@@ -1,9 +1,9 @@
+import handleTokens from "../utils/handleTokens";
 import { convertToJson } from "../utils/helpers";
-import Cookies from 'js-cookie';
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export async function login({ workId, password, rememberUser }) { //TODO: authorzation using BE credentials
+export async function login({ workId, password, rememberUser }) {
     const response = await fetch(`${API_URL}/identity/login`, {
         method: 'POST',
         body: JSON.stringify({
@@ -61,19 +61,26 @@ export async function fetchUser(id, accessToken) {
     })
 }
 
-async function refreshTokenAndRetry(originalRequest) { //TODO: authorzation using BE credentials
+async function refreshTokenAndRetry(originalRequest, refreshToken) {
     try {
+        const { updateTokens } = handleTokens();
         const response = await fetch(`${API_URL}/identity/refresh-token`, {
             method: 'POST',
-            credentials: 'include',
+            body: JSON.stringify({
+                refreshToken
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
         });
 
         if (!response.ok) {
-            throw new Error('Failed to refresh token');
+            return null;
         }
 
         const data = await response.json();
-        Cookies.setItem('accessToken', data.accessToken);
+
+        updateTokens(data.accessToken, data.refreshToken);
 
         return await originalRequest();
     } catch (error) {
@@ -82,7 +89,7 @@ async function refreshTokenAndRetry(originalRequest) { //TODO: authorzation usin
 }
 
 export async function getCurrentUser() {
-    const accessToken = Cookies.get('accessToken');
+    const { accessToken, refreshToken } = handleTokens()
 
     if (!accessToken) return null;
 
@@ -91,10 +98,8 @@ export async function getCurrentUser() {
     const response = await fetchUser(user.id, accessToken)
 
     if (!response.ok) {
-        // refreshTokenAndRetry(getCurrentUser);
-        Cookies.remove('accessToken');
-        Cookies.remove('refreshToken');
-        return null;
+        const res = await refreshTokenAndRetry(getCurrentUser, refreshToken);
+        return res;
     }
 
     const data = await response.json();
