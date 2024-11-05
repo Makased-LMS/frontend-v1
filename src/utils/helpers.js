@@ -13,6 +13,7 @@ export const convertToJson = (token) => {
                 newKey[0] = 'id'
             newToken[newKey] = decoded[key];
         });
+
         return newToken;
     }
     catch {

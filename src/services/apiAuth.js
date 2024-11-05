@@ -1,5 +1,5 @@
 import axiosAPI from "../API/axiosAPI";
-import { getAccessToken } from "../utils/handleTokens";
+import { clearTokens, getAccessToken, getRefreshToken } from "../utils/handleTokens";
 import { convertToJson } from "../utils/helpers";
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -31,9 +31,30 @@ export async function forgotPassword(workId) {
 export async function fetchUser() {
     const accessToken = getAccessToken();
     const user = convertToJson(accessToken)
+    if (!user?.id || !user?.exp) {
+        clearTokens();
+        return null;
+    }
+
+    const expDate = new Date(user.exp * 1000);
+
+    const currentDate = new Date();
+
+    console.log(expDate, currentDate);
+
+    if (expDate < currentDate) {
+        await refreshToken();
+    }
+
     return await axiosAPI.get(`${API_URL}/identity/users/${user?.id}`)
 }
 
+export async function refreshToken() {
+    const refreshToken = getRefreshToken();
+    return await axiosAPI.post('/identity/refresh-token', {
+        refreshToken,
+    })
+}
 
 export async function getCurrentUser() {
     const accessToken = getAccessToken();
@@ -41,12 +62,6 @@ export async function getCurrentUser() {
     if (!accessToken) return null;
 
     const response = await fetchUser()
-
-    console.log(response);
-
-    if (response.status !== 200) {
-        return null;
-    }
 
     return response.data;
 }
