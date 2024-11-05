@@ -1,107 +1,52 @@
-import handleTokens from "../utils/handleTokens";
+import axiosAPI from "../API/axiosAPI";
+import { getAccessToken } from "../utils/handleTokens";
 import { convertToJson } from "../utils/helpers";
 
 const API_URL = import.meta.env.VITE_API_URL
 
 export async function login({ workId, password, rememberUser }) {
-    const response = await fetch(`${API_URL}/identity/login`, {
-        method: 'POST',
-        body: JSON.stringify({
-            workId,
-            password
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
+    const response = await axiosAPI.post(`${API_URL}/identity/login`, {
+        workId,
+        password
+    }).catch(() => { throw new Error('Invalid credentials') })
 
-    if (!response.ok) throw new Error("Invalid credentials");
-
-    const data = await response.json();
-
+    const data = response.data
     return { data, rememberUser };
 }
 
 export async function resetPassword(workId, token, newPassword) {
-    const response = await fetch(`${API_URL}/identity/reset-forgotten-password`, {
-        method: 'POST',
-        body: JSON.stringify({
-            workId,
-            token,
-            newPassword
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
+    const response = await axiosAPI.post(`${API_URL}/identity/reset-forgotten-password`, {
+        workId,
+        token,
+        newPassword
     })
 
     return response;
 }
 
 export async function forgotPassword(workId) {
-    return await fetch(`${API_URL}/identity/forgot-password`, {
-        method: 'POST',
-        body: JSON.stringify({
-            workId
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
+    return await axiosAPI.post(`${API_URL}/identity/forgot-password`, { workId })
 }
 
-export async function fetchUser(id, accessToken) {
-
-    return await fetch(`${API_URL}/identity/users/${id}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-type': 'application/json'
-        }
-    })
+export async function fetchUser() {
+    const accessToken = getAccessToken();
+    const user = convertToJson(accessToken)
+    return await axiosAPI.get(`${API_URL}/identity/users/${user?.id}`)
 }
 
-async function refreshTokenAndRetry(originalRequest, refreshToken) {
-    try {
-        const { updateTokens } = handleTokens();
-        const response = await fetch(`${API_URL}/identity/refresh-token`, {
-            method: 'POST',
-            body: JSON.stringify({
-                refreshToken
-            }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const data = await response.json();
-
-        updateTokens(data.accessToken, data.refreshToken);
-
-        return await originalRequest();
-    } catch (error) {
-        console.error('Token refresh failed:', error);
-    }
-}
 
 export async function getCurrentUser() {
-    const { accessToken, refreshToken } = handleTokens()
+    const accessToken = getAccessToken();
 
     if (!accessToken) return null;
 
-    const user = convertToJson(accessToken)
+    const response = await fetchUser()
 
-    const response = await fetchUser(user.id, accessToken)
+    console.log(response);
 
-    if (!response.ok) {
-        const res = await refreshTokenAndRetry(getCurrentUser, refreshToken);
-        return res;
+    if (response.status !== 200) {
+        return null;
     }
 
-    const data = await response.json();
-    return data;
+    return response.data;
 }
