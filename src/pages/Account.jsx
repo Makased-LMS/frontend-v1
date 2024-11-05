@@ -81,13 +81,13 @@ function Account() {
   };
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  async function accountApi() {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${"ID1"}`);
-    const data = await res.json();
-    return data;
-  }
+  // async function accountApi() {
+  //   const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${"ID1"}`);
+  //   const data = await res.json();
+  //   return data;
+  // }
 
-  console.log(accountApi());
+  // console.log(accountApi());
   //__________________________
   return (
     <Box

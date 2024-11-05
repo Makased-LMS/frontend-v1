@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useMemo } from 'react'
+import { Outlet } from 'react-router-dom'
 
-import { AppProvider } from '@toolpad/core/AppProvider'
+import { AppProvider } from '@toolpad/core/react-router-dom'
 import { DashboardLayout } from '@toolpad/core/DashboardLayout'
 
 import theme from '../utils/theme'
@@ -13,23 +13,8 @@ import { useLogout } from '../features/authentication/useLogout.js'
 import logo from '../images/logo.jpg'
 
 const AppLayout = () => {
-    const location = useLocation();
-    const [pathname, setPathName] = useState(location.pathname);
-    const navigate = useNavigate();
     const { user } = useUser();
     const { logout } = useLogout();
-
-    const router = useMemo(() => {
-        return {
-            pathname,
-            searchParams: new URLSearchParams(),
-            navigate: (path) => {
-                navigate(path)
-                setPathName(path)
-            },
-        };
-    }, [pathname, navigate]);
-
 
     const authentication = useMemo(() => {
         return {
@@ -55,7 +40,6 @@ const AppLayout = () => {
                 title: 'Makassed LMS',
             }}
             navigation={navigation[user.role]}
-            router={router}
             authentication={authentication}
             theme={theme}
             session={{
