@@ -2,10 +2,8 @@ import axiosAPI from "../API/axiosAPI";
 import { clearTokens, getAccessToken, getRefreshToken } from "../utils/handleTokens";
 import { convertToJson } from "../utils/helpers";
 
-const API_URL = import.meta.env.VITE_API_URL
-
 export async function login({ workId, password, rememberUser }) {
-    const response = await axiosAPI.post(`${API_URL}/identity/login`, {
+    const response = await axiosAPI.post(`/identity/login`, {
         workId,
         password
     }).catch(() => { throw new Error('Invalid credentials') })
@@ -14,18 +12,23 @@ export async function login({ workId, password, rememberUser }) {
     return { data, rememberUser };
 }
 
+export async function revokeRefreshToken() {
+    const refreshToken = getRefreshToken();
+    return await axiosAPI.post(`/identity/revoke-refresh-token`, {
+        refreshToken,
+    })
+}
+
 export async function resetPassword(workId, token, newPassword) {
-    const response = await axiosAPI.post(`${API_URL}/identity/reset-forgotten-password`, {
+    return await axiosAPI.post(`/identity/reset-forgotten-password`, {
         workId,
         token,
         newPassword
     })
-
-    return response;
 }
 
 export async function forgotPassword(workId) {
-    return await axiosAPI.post(`${API_URL}/identity/forgot-password`, { workId })
+    return await axiosAPI.post(`/identity/forgot-password`, { workId })
 }
 
 export async function fetchUser() {
@@ -40,13 +43,11 @@ export async function fetchUser() {
 
     const currentDate = new Date();
 
-    console.log(expDate, currentDate);
-
     if (expDate < currentDate) {
         await refreshToken();
     }
 
-    return await axiosAPI.get(`${API_URL}/identity/users/${user?.id}`)
+    return await axiosAPI.get(`/identity/users/${user?.id}`)
 }
 
 export async function refreshToken() {
