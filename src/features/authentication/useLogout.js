@@ -10,7 +10,6 @@ export function useLogout() {
   const { mutate: logout, isLoading } = useMutation({
     mutationFn: async () => {
       await revokeRefreshToken();
-      clearTokens();
       queryClient.clear();
       navigate("/login", { replace: true });
     },

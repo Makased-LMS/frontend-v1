@@ -14,9 +14,12 @@ export async function login({ workId, password, rememberUser }) {
 
 export async function revokeRefreshToken() {
     const refreshToken = getRefreshToken();
-    return await axiosAPI.post(`/identity/revoke-refresh-token`, {
+    const response = await axiosAPI.post(`/identity/revoke-refresh-token`, {
         refreshToken,
     })
+    clearTokens();
+
+    return response;
 }
 
 export async function resetPassword(workId, token, newPassword) {
@@ -59,8 +62,13 @@ export async function refreshToken() {
 
 export async function getCurrentUser() {
     const accessToken = getAccessToken();
+    const refreshToken = getRefreshToken();
 
-    if (!accessToken) return null;
+    if (!accessToken) {
+        if (refreshToken)
+            revokeRefreshToken()
+        return null;
+    }
 
     const response = await fetchUser()
 
