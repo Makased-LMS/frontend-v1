@@ -9,8 +9,8 @@ import InputPassword from "../ui/InputPassword";
 import { resetPassword } from "../services/apiAuth";
 
 import logo from '../images/logo.jpg'
-import { useUser } from "../features/authentication/useUser";
 import LoginIcon from '@mui/icons-material/Login'
+import { useUser } from "../features/users/useUser";
 
 const ResetPassword = () => {
     const [showPassword, setShowPassword] = useState(false);
