@@ -27,7 +27,7 @@ axiosAPI.interceptors.response.use(response => {
     const endpoint = request.responseURL.split('/').slice(-1)[0]
     if (endpoint === 'refresh-token') {
         clearTokens();
-        return error;
+        throw new Error(error)
     }
     if (error.code === 'ERR_NETWORK') { // must be switched to Error.status === 401
         const response = await refreshToken();
@@ -39,6 +39,6 @@ axiosAPI.interceptors.response.use(response => {
         return axiosAPI(request);
 
     }
-    return error;
+    throw new Error(error);
 });
 export default axiosAPI;
