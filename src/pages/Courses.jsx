@@ -37,33 +37,33 @@ const courses = [
     image: "./logo.jpg",
     status: "Published",
   },
-  {
-    title: "Master Design System In Figma",
-    created: "April 13, 2022 - 4:24 PM",
-    duration: "20h 10m",
-    price: "$150",
-    level: "Advanced",
-    image: "./logo.jpg",
-    status: "Published",
-  },
-  {
-    title: "Master Design System In Figma",
-    created: "April 13, 2022 - 4:24 PM",
-    duration: "20h 10m",
-    price: "$150",
-    level: "Advanced",
-    image: "./logo.jpg",
-    status: "Published",
-  },
-  {
-    title: "Master Design System In Figma",
-    created: "April 13, 2022 - 4:24 PM",
-    duration: "20h 10m",
-    price: "$150",
-    level: "Advanced",
-    image: "./logo.jpg",
-    status: "Published",
-  },
+  // {
+  //   title: "Master Design System In Figma",
+  //   created: "April 13, 2022 - 4:24 PM",
+  //   duration: "20h 10m",
+  //   price: "$150",
+  //   level: "Advanced",
+  //   image: "./logo.jpg",
+  //   status: "Published",
+  // },
+  // {
+  //   title: "Master Design System In Figma",
+  //   created: "April 13, 2022 - 4:24 PM",
+  //   duration: "20h 10m",
+  //   price: "$150",
+  //   level: "Advanced",
+  //   image: "./logo.jpg",
+  //   status: "Published",
+  // },
+  // {
+  //   title: "Master Design System In Figma",
+  //   created: "April 13, 2022 - 4:24 PM",
+  //   duration: "20h 10m",
+  //   price: "$150",
+  //   level: "Advanced",
+  //   image: "./logo.jpg",
+  //   status: "Published",
+  // },
 ];
 
 function Courses() {
@@ -73,7 +73,7 @@ function Courses() {
       component={Card}
       variant="outlined"
       sx={{
-        maxHeight: "100vh", // Set the desired height for scrollable content
+        maxHeight: "auto", // Set the desired height for scrollable content
         overflowY: "auto", // Enable vertical scrolling
       }}
     >
@@ -130,7 +130,8 @@ function Courses() {
                   container
                   gap={1}
                   sx={{
-                    flexDirection: isSmallScreen ? "column" : "row",
+                    // flexDirection: isSmallScreen ? "column" : "row",
+                    flexDirection: { xs: "row", sm: "column", md: "row" },
                     justifyContent: isSmallScreen ? "center" : "",
                     alignItems: isSmallScreen ? "center" : "",
                   }}
