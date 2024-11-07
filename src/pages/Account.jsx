@@ -12,7 +12,11 @@ import {
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import PalestineFlagIcon from "../ui/PalestineFlagIcon";
 import theme from "../utils/theme";
+import { useUser } from "./../features/authentication/useUser";
+
 function Account() {
+  const { user } = useUser();
+
   const sx = {
     // styling text field
     width: "7.5rem",
@@ -56,7 +60,7 @@ function Account() {
     },
   };
   const eduS = {
-    width: "6rem",
+    width: "7rem",
     "& input": {
       textAlign: "center", // Center text inside the input
     },
@@ -81,14 +85,6 @@ function Account() {
   };
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // async function accountApi() {
-  //   const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${"ID1"}`);
-  //   const data = await res.json();
-  //   return data;
-  // }
-
-  // console.log(accountApi());
-  //__________________________
   return (
     <Box
       sx={{
@@ -113,7 +109,7 @@ function Account() {
                   </Typography>
                   <TextField
                     variant="outlined"
-                    value="202010778"
+                    value={user.workId}
                     readOnly
                     size="small"
                     sx={sx}
@@ -125,7 +121,7 @@ function Account() {
               <TextField
                 label="First name"
                 variant="outlined"
-                value="Mohammad"
+                value={user.firstName}
                 readOnly
                 size="small"
                 sx={sx1}
@@ -133,7 +129,7 @@ function Account() {
               <TextField
                 label="Middle name"
                 variant="outlined"
-                value="As'ad"
+                value={user.middleName}
                 readOnly
                 size="small"
                 sx={sx1}
@@ -141,7 +137,7 @@ function Account() {
               <TextField
                 label="Last name"
                 variant="outlined"
-                value="As'ad"
+                value={user.lastName}
                 readOnly
                 size="small"
                 sx={sx1}
@@ -151,7 +147,7 @@ function Account() {
               <TextField
                 label="Birthdate"
                 variant="outlined"
-                value="10/9/2002"
+                value={user.birthDate}
                 readOnly
                 size="small"
                 sx={sx1}
@@ -183,7 +179,7 @@ function Account() {
               <Grid item>
                 <TextField
                   variant="outlined"
-                  value="PhD"
+                  value={user.educationalLevel}
                   readOnly
                   size="small"
                   sx={eduS}
@@ -236,7 +232,7 @@ function Account() {
               <TextField
                 label="Phone Number"
                 variant="outlined"
-                value="594667015"
+                value={user.phoneNumber}
                 readOnly
                 size="small"
                 sx={sx1}
@@ -245,7 +241,7 @@ function Account() {
                     startAdornment: (
                       <InputAdornment position="start">
                         <PalestineFlagIcon />
-                        <span>+970</span>
+                        <span>+97</span>
                       </InputAdornment>
                     ),
                   },
@@ -257,7 +253,7 @@ function Account() {
               <TextField
                 label="Email Address"
                 variant="outlined"
-                value="mohammadasaad14@gmai.com"
+                value={user.email}
                 readOnly
                 size="large"
                 sx={{ ...sx1, width: "18rem" }}
@@ -281,11 +277,11 @@ function Account() {
               </Typography>
             </Grid>
             <Grid container spacing={3} sx={{ ml: 2 }}>
-              <Grid sx={{ mb: 3 }}>
+              <Grid>
                 <TextField
                   label="Department"
                   variant="outlined"
-                  value="Emergency"
+                  value={user.department.name}
                   readOnly
                   size="small"
                   sx={{ ...sx1 }}
@@ -295,7 +291,7 @@ function Account() {
                 <TextField
                   label="Major"
                   variant="outlined"
-                  value="nurse"
+                  value={user.major.name}
                   readOnly
                   size="small"
                   sx={{ ...sx1 }}
@@ -305,7 +301,7 @@ function Account() {
                 <TextField
                   label="Role"
                   variant="outlined"
-                  value="Staff"
+                  value={user.role}
                   readOnly
                   size="small"
                   sx={{ ...sx1 }}
