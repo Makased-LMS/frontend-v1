@@ -1,16 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
+import { clearTokens } from "../../utils/handleTokens";
+import { revokeRefreshToken } from "../../services/apiAuth";
 
 export function useLogout() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { mutate: logout, isLoading } = useMutation({
-    mutationFn: () => {
-      queryClient.removeQueries();
-      Cookies.remove('accessToken');
-      Cookies.remove('refreshToken');
+    mutationFn: async () => {
+      await revokeRefreshToken();
+      queryClient.clear();
       navigate("/login", { replace: true });
     },
   });

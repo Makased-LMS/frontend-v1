@@ -1,102 +1,76 @@
+import axiosAPI from "../API/axiosAPI";
+import { clearTokens, getAccessToken, getRefreshToken } from "../utils/handleTokens";
 import { convertToJson } from "../utils/helpers";
-import Cookies from 'js-cookie';
 
-const API_URL = import.meta.env.VITE_API_URL
+export async function login({ workId, password, rememberUser }) {
+    const response = await axiosAPI.post(`/identity/login`, {
+        workId,
+        password
+    }).catch(() => { throw new Error('Invalid credentials') })
 
-export async function login({ workId, password, rememberUser }) { //TODO: authorzation using BE credentials
-    const response = await fetch(`${API_URL}/identity/login`, {
-        method: 'POST',
-        body: JSON.stringify({
-            workId,
-            password
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
-
-    if (!response.ok) throw new Error("Invalid credentials");
-
-    const data = await response.json();
-
+    const data = response.data
     return { data, rememberUser };
 }
 
-export async function resetPassword(workId, token, newPassword) {
-    const response = await fetch(`${API_URL}/identity/reset-forgotten-password`, {
-        method: 'POST',
-        body: JSON.stringify({
-            workId,
-            token,
-            newPassword
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
+export async function revokeRefreshToken() {
+    const refreshToken = getRefreshToken();
+    const response = await axiosAPI.post(`/identity/revoke-refresh-token`, {
+        refreshToken,
     })
+    clearTokens();
 
     return response;
 }
 
+export async function resetPassword(workId, token, newPassword) {
+    return await axiosAPI.post(`/identity/reset-forgotten-password`, {
+        workId,
+        token,
+        newPassword
+    })
+}
+
 export async function forgotPassword(workId) {
-    return await fetch(`${API_URL}/identity/forgot-password`, {
-        method: 'POST',
-        body: JSON.stringify({
-            workId
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
+    return await axiosAPI.post(`/identity/forgot-password`, { workId })
 }
 
-export async function fetchUser(id, accessToken) {
-
-    return await fetch(`${API_URL}/identity/users/${id}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-type': 'application/json'
-        }
-    })
-}
-
-async function refreshTokenAndRetry(originalRequest) { //TODO: authorzation using BE credentials
-    try {
-        const response = await fetch(`${API_URL}/identity/refresh-token`, {
-            method: 'POST',
-            credentials: 'include',
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to refresh token');
-        }
-
-        const data = await response.json();
-        Cookies.setItem('accessToken', data.accessToken);
-
-        return await originalRequest();
-    } catch (error) {
-        console.error('Token refresh failed:', error);
-    }
-}
-
-export async function getCurrentUser() {
-    const accessToken = Cookies.get('accessToken');
-
-    if (!accessToken) return null;
-
+export async function fetchUser() {
+    const accessToken = getAccessToken();
     const user = convertToJson(accessToken)
-
-    const response = await fetchUser(user.id, accessToken)
-
-    if (!response.ok) {
-        // refreshTokenAndRetry(getCurrentUser);
-        Cookies.remove('accessToken');
-        Cookies.remove('refreshToken');
+    if (!user?.id || !user?.exp) {
+        clearTokens();
         return null;
     }
 
-    const data = await response.json();
-    return data;
+    const expDate = new Date(user.exp * 1000);
+
+    const currentDate = new Date();
+
+    if (expDate < currentDate) {
+        await refreshToken();
+    }
+
+    return await axiosAPI.get(`/identity/users/${user?.id}`)
+}
+
+export async function refreshToken() {
+    const refreshToken = getRefreshToken();
+    return await axiosAPI.post('/identity/refresh-token', {
+        refreshToken,
+    })
+}
+
+export async function getCurrentUser() {
+    const accessToken = getAccessToken();
+    const refreshToken = getRefreshToken();
+
+    if (!accessToken) {
+        if (refreshToken)
+            revokeRefreshToken()
+        return null;
+    }
+
+    const response = await fetchUser()
+
+    return response.data;
 }

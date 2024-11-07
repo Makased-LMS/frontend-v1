@@ -85,7 +85,6 @@ function Account() {
   };
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  //__________________________
   return (
     <Box
       sx={{
