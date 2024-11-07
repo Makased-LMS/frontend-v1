@@ -1,10 +1,11 @@
 import React from 'react';
+import KeyIcon from "@mui/icons-material/Key";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useState } from "react"
 import { Navigate, Link as RouterLink } from 'react-router-dom'
 import { useForm } from "react-hook-form";
 
 import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid2 as Grid, Link, TextField, Typography } from "@mui/material"
-import VpnKey from "@mui/icons-material/VpnKey"
 
 import InputPassword from "../ui/InputPassword";
 import { useLogin } from "../features/authentication/useLogin";
@@ -15,7 +16,7 @@ import { useUser } from "../features/users/useUser";
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false)
 
-    const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
+    const { register, handleSubmit, formState: { errors: formErrors, isValid } } = useForm();
     const { isAuthenticated } = useUser();
     const { login, isLoading } = useLogin();
 
@@ -72,9 +73,18 @@ const Login = () => {
                         />} label="Remember me." />
                     </Grid>
 
-                    <Button type={'submit'} variant="contained" disabled={isLoading} startIcon={<VpnKey />} endIcon={isLoading && <CircularProgress size={20} />}>
-                        <span color='primary'>Login</span>
-                    </Button>
+                    <LoadingButton
+                        type="submit"
+                        disabled={isLoading || !isValid}
+                        fullWidth
+                        variant="contained"
+                        startIcon={<KeyIcon />}
+                        aria-label="Login"
+                        loading={isLoading}
+                        loadingPosition="start"
+                    >
+                        Log In
+                    </LoadingButton>
                     <Link
                         component={RouterLink}
                         to={'/forgot-password'}
