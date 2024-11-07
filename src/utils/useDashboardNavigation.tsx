@@ -10,7 +10,6 @@ import { useDepartments } from '../features/departments/useDepartments';
 const useDashboardNavigation = (userRole) => {
     const { departments, isLoading } = useDepartments(userRole);
     let departmentsChildren = [{
-        segment: '',
         icon: <strong>Manage departments</strong>
     }]
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { lazy } from "react";
 import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import PrivateRoute from "../ui/PrivateRoute";
