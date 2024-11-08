@@ -7,10 +7,12 @@ export function useDepartments(userRole) {
         queryKey: ["departments"],
         queryFn: async () => {
             if (userRole === 'Admin')
-                return await getDepartments()
+                return (await getDepartments()).data
 
             return null;
-        }
+        },
+
+        throwOnError: true
     });
 
     return { isLoading: isFetching, departments };

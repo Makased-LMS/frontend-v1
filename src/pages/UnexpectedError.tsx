@@ -16,7 +16,7 @@ const UnexpectedError = ({
             <Typography variant="h4" sx={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
+                justifyContent: "center",
             }}>
                 <ErrorOutlineIcon fontSize={"large"} sx={{ m: 10 }} /> Unexpected
                 Error
@@ -24,7 +24,7 @@ const UnexpectedError = ({
             <Button
                 onClick={resetErrorBoundary}
                 variant="contained"
-                color="warning"
+                color="error"
             >
                 Try again
             </Button>

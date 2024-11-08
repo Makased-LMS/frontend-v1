@@ -1,16 +1,21 @@
-import React from 'react';
-import { useState } from "react";
+import React, { FC, PropsWithChildren, useState } from "react";
 import {
     ErrorBoundary as ErrorBoundaryComponent,
+    ErrorBoundaryProps as ErrorBoundaryComponentProps,
 } from "react-error-boundary";
 import UnexpectedError from "../pages/UnexpectedError";
-const ErrorBoundary = ({ children }) => {
+import { useLogout } from "../features/authentication/useLogout";
+
+const ErrorBoundary: FC<PropsWithChildren> = ({ children }) => {
     const [someKey, setSomeKey] = useState(null);
+    const { logout } = useLogout()
 
-    const resetErrorBoundary = () =>
+    const resetErrorBoundary: ErrorBoundaryComponentProps["onReset"] = () => {
+        logout()
         setSomeKey(null);
+    }
 
-    const logErrorToService = (
+    const logErrorToService: ErrorBoundaryComponentProps["onError"] = (
         error,
         info,
     ) => {
