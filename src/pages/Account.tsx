@@ -14,6 +14,7 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import PalestineFlagIcon from "../ui/PalestineFlagIcon";
 import theme from "../utils/theme";
 import { useUser } from "./../features/users/useUser";
+import { roleNames } from '../Enums/roles';
 
 function Account() {
   const { user } = useUser();
@@ -302,7 +303,7 @@ function Account() {
                 <TextField
                   label="Role"
                   variant="outlined"
-                  value={user.role}
+                  value={roleNames[user.role]}
                   readOnly
                   size="small"
                   sx={{ ...sx1 }}
