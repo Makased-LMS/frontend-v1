@@ -15,9 +15,17 @@ import PalestineFlagIcon from "../ui/PalestineFlagIcon";
 import theme from "../utils/theme";
 import { useUser } from "./../features/users/useUser";
 import { roleNames } from '../Enums/roles';
-
+import VisuallyHiddenInput from '../ui/VisuallyHiddenInput'
+import { useForm } from 'react-hook-form';
+import { updateProfilePicture } from '../services/apiUser';
+import { useUpdateUser } from '../features/users/useUpdateUser';
+import { useDialogs } from '@toolpad/core';
 function Account() {
   const { user } = useUser();
+  const { updateUser } = useUpdateUser()
+  const { register, handleSubmit, watch } = useForm();
+
+  const dialogs = useDialogs();
 
   const sx = {
     // styling text field
@@ -86,6 +94,19 @@ function Account() {
     },
   };
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const updateProfile = async (data) => {
+    if (!data.profilePicture.length)
+      return;
+
+    const confirmed = await dialogs.confirm('Are you sure you want to update profile picture?', {
+      okText: 'Yes',
+      cancelText: 'No',
+    })
+
+    if (confirmed)
+      updateUser(data.profilePicture[0], 'profile')
+  }
 
   return (
     <Box
@@ -195,7 +216,8 @@ function Account() {
             alignItems={isSmallScreen ? "center" : ""}
             justifyContent={isSmallScreen ? "center" : ""}
           >
-            <Grid
+            <Grid component="form"
+              onSubmit={handleSubmit(updateProfile)}
               container
               direction={"column"}
               size={2.5}
@@ -204,16 +226,27 @@ function Account() {
               sx={{ mt: 4, mr: 2 }}
               spacing={2}
             >
-              <Grid>
+
+              <label>
                 <Avatar
                   sx={{ width: 100, height: 100 }}
                   alt="user"
-                  src="../logo.jpg"
+                  src={user.profilePicture?.path}
                 />
-              </Grid>
-              <Grid>
-                <Button variant="contained">Update Picture</Button>
-              </Grid>
+                <VisuallyHiddenInput
+                  type="file"
+                  {...register('profilePicture')}
+                />
+
+              </label>
+
+              <Button
+                type='submit'
+                variant="contained"
+                disabled={!watch('profilePicture')}
+              >
+                Update Picture
+              </Button>
             </Grid>
           </Grid>
         </Grid>
