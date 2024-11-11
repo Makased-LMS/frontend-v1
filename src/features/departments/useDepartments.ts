@@ -7,7 +7,7 @@ export function useDepartments(userRole = 'Admin') {
         queryKey: ["departments"],
         queryFn: async () => {
             if (userRole === 'Admin')
-                return getDepartments()
+                return await getDepartments()
 
             return null;
         },
