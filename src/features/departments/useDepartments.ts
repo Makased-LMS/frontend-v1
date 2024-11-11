@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDepartments } from "../../services/apiDepartments";
-import { roleNames } from "../../Enums/roles";
 
-export function useDepartments(userRole) {
+export function useDepartments(userRole = 'Admin') {
 
     const { isFetching, data: departments } = useQuery({
         queryKey: ["departments"],
