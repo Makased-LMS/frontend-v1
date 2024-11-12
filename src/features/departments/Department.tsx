@@ -94,7 +94,8 @@ function Department() {
                                         {major.id}
                                     </TableCell>
                                     <TableCell sx={{
-                                        fontSize: 16
+                                        fontSize: 16,
+                                        fontWeight: 600
                                     }}>
                                         <Tooltip title="Manage Department">
                                             <Link component={RouterLink} to={`${major.id}`} underline='none'>
