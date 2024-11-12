@@ -97,11 +97,9 @@ function Department() {
                                         fontSize: 16,
                                         fontWeight: 600
                                     }}>
-                                        <Tooltip title="Manage Department">
-                                            <Link underline='none'>
-                                                {major.name}
-                                            </Link>
-                                        </Tooltip>
+                                        <Link underline='none'>
+                                            {major.name}
+                                        </Link>
                                     </TableCell>
                                     <TableCell>
                                         <ActionsMenu key={major.id}
