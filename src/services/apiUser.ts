@@ -91,13 +91,12 @@ type searchPayload = {
 }
 
 const initialPayload: searchPayload = {
-    "filters": '',
-    "sorts": '',
     "page": 1,
-    "pageSize": 10
+    "pageSize": 8
 }
 
 export async function searchUsers(payload:searchPayload = initialPayload) {
+    console.log(payload);
     const response = await axiosAPI.post('users/search', payload)
     return response.data;
 }

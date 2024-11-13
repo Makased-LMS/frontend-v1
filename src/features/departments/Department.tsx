@@ -15,7 +15,7 @@ import SpinnerLoader from '../../ui/SpinnerLoader';
 function Department() {
     const { departmentId } = useParams();
     const { department, departmentDispatch, isLoading: fetchingDep } = useDispatchDepartment()
-    const { majors, isLoading: fetchingMajors, refetch } = useMajors(departmentId)
+    const { majors, isLoading: fetchingMajors } = useMajors(departmentId)
     const { majorsDispatch, isLoading: dispatchingMajors } = useDispatchMajors();
 
     const dialogs = useDialogs();
@@ -45,9 +45,8 @@ function Department() {
     }
 
     useEffect(() => {
-        refetch();
         departmentDispatch({ action: 'get', payload: { id: departmentId } })
-    }, [departmentDispatch, departmentId, refetch])
+    }, [departmentDispatch, departmentId])
 
     if (fetchingDep || fetchingMajors || dispatchingMajors)
         return <SpinnerLoader />

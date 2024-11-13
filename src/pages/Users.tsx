@@ -1,38 +1,36 @@
-import { Box, Button, Grid2 as Grid, Paper, Typography } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import { Button, Grid2 as Grid, Paper, Typography } from '@mui/material';
+import { DataGrid, } from '@mui/x-data-grid';
 import { roleNames } from '../Enums/roles';
 import { levelNames } from '../Enums/educationLevels';
 import { useUsers } from '../features/users/useUsers';
-import SpinnerLoader from '../ui/SpinnerLoader';
 import { useNavigate } from 'react-router-dom';
 import { useDialogs } from '@toolpad/core';
 import ActionsMenu from '../ui/ActionsMenu';
 import { useDispatchUsers } from '../features/users/useDispatchUsers';
 import { Add } from '@mui/icons-material';
-
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { filterOperators } from '../Enums/filterOperators';
 
 function Users() {
-    const { users, isLoading: fetchingUsers } = useUsers();
+    const [filters, setFilters] = useState('')
+    const [paginationModel, setPaginationModel] = useState({
+        filters,
+        page: 1,
+        pageSize: 10
+    })
+    const { users, isLoading: fetchingUsers } = useUsers(paginationModel);
     const { usersDispatch, isLoading: dispatchingUser } = useDispatchUsers()
     const navigate = useNavigate()
     const dialogs = useDialogs();
 
-    const handleEdit = (id) => {
-        navigate(`${id}`)
-    }
+    const rowCountRef = useRef(users?.metadata.totalItems || 0);
 
-    const handleDelete = async (id) => {
-        const confirmed = await dialogs.confirm('Are you sure to delete this User?', {
-            title: 'Delete User ❌',
-            okText: 'Yes',
-            cancelText: 'No',
-        })
-
-        if (confirmed)
-            usersDispatch({ action: 'delete', payload: { id } })
-    }
+    const rowCount = useMemo(() => {
+        if (users?.metadata.totalItems !== undefined) {
+            rowCountRef.current = users?.metadata.totalItems;
+        }
+        return rowCountRef.current;
+    }, [users?.metadata.totalItems]);
 
     const columns = [
         {
@@ -112,14 +110,26 @@ function Users() {
                 ];
             },
         }
-
     ];
 
-    if (fetchingUsers || dispatchingUser)
-        return <SpinnerLoader />
+
+    const handleEdit = (id) => {
+        navigate(`${id}`)
+    }
+
+    const handleDelete = async (id) => {
+        const confirmed = await dialogs.confirm('Are you sure to delete this User?', {
+            title: 'Delete User ❌',
+            okText: 'Yes',
+            cancelText: 'No',
+        })
+
+        if (confirmed)
+            usersDispatch({ action: 'delete', payload: { id } })
+    }
 
     return (
-        <Grid component={Paper} container flexDirection={'column'} height={'100%'} spacing={2} sx={{
+        <Grid component={Paper} container alignSelf={'center'} flexDirection={'column'} height={'90dvh'} spacing={2} sx={{
             padding: 2,
             width: {
                 xs: '100dvw',
@@ -138,17 +148,16 @@ function Users() {
                     Users
                 </Typography>
                 <Button
-                    // onClick={openAddUserDialod} 
+                    onClick={() => usersDispatch({ action: 'add' })}
                     variant='contained' endIcon={<Add />}>Add user</Button>
             </Grid>
             <DataGrid
-                rows={users.items}
-                columns={columns}
-                rowCount={users.metadata.totalPages}
+
                 loading={fetchingUsers || dispatchingUser}
+                rows={users?.items}
+                columns={columns}
+                rowCount={rowCount}
                 editMode="row"
-                pageSizeOptions={[10]}
-                // checkboxSelection
                 disableRowSelectionOnClick
                 onRowClick={async (data) => {
                     const confirmed = await dialogs.confirm('Do you want to show full user details?', {
@@ -160,8 +169,52 @@ function Users() {
                         navigate(`${data.id}`)
                 }}
                 sx={{
-                    width: '100%'
+                    width: '100%',
+                    overflow: 'auto'
                 }}
+                pageSizeOptions={[5, 10, 25, 50]}
+                paginationMode='server'
+                paginationModel={{
+                    ...paginationModel,
+                    page: paginationModel.page - 1
+                }}
+                onPaginationModelChange={(model) => {
+                    setPaginationModel({ page: model.page + 1, pageSize: model.pageSize, filters })
+                }}
+                filterMode='server'
+                // filterModel={ }
+                onFilterModelChange={
+                    (model) => {
+                        const item = model.items[0];
+                        console.log(model);
+                        let newFilters = '';
+                        if (item?.value?.length && item.operator === 'isAnyOf') {
+                            newFilters = `${item.field}==`
+                            for (let i = 0; i < item.value.length; i++) {
+                                if (i > 0)
+                                    newFilters += '|'
+                                newFilters += `${item.value[i]}`;
+                            }
+
+                        }
+                        else if (item?.value && item.operator !== 'isNotEmpty') {
+                            const op = filterOperators[item.operator];
+                            newFilters = `${item.field}${op}${item.value}`;
+                        }
+
+                        setFilters(newFilters);
+                        setPaginationModel((model) => {
+                            return {
+                                ...model,
+                                filters: newFilters,
+                                page: 1
+                            }
+                        })
+                    }
+                }
+
+                // disableColumnFilter
+                disableColumnSorting
             />
         </Grid>
     )
