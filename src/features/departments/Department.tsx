@@ -67,17 +67,20 @@ function Department() {
                     <TableHead sx={{ bgcolor: 'whiteSmoke' }}>
                         <TableRow >
                             <TableCell width={80} sx={{
-                                fontSize: 18
+                                fontSize: 18,
+                                bgcolor: 'primary.light'
                             }}>
                                 ID
                             </TableCell>
                             <TableCell sx={{
-                                fontSize: 18
+                                fontSize: 18,
+                                bgcolor: 'primary.light'
                             }}>
                                 Name
                             </TableCell>
                             <TableCell width={40} sx={{
-                                fontSize: 18
+                                fontSize: 18,
+                                bgcolor: 'primary.light'
                             }}>
                                 Actions
                             </TableCell>

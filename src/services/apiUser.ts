@@ -84,8 +84,8 @@ export async function updateProfilePicture(file, oldPic){
 }
 
 type searchPayload = {
-    "filters": string,
-    "sorts": string,
+    "filters"?: string,
+    "sorts"?: string,
     "page": number,
     "pageSize": number
 }
@@ -96,7 +96,6 @@ const initialPayload: searchPayload = {
 }
 
 export async function searchUsers(payload:searchPayload = initialPayload) {
-    console.log(payload);
     const response = await axiosAPI.post('users/search', payload)
     return response.data;
 }
@@ -106,7 +105,12 @@ export async function addUser(payload: User){
 }
 
 export async function editUser(id:number, payload: User){
-    return await axiosAPI.put(`users/${id}`, payload)
+    return await axiosAPI.put(`users/${id}`, payload,{
+            headers: {
+                    'Content-Type': 'application/json-patch+json',
+                    }
+        }
+    )
 }
 
 export async function deleteUser(id: number){

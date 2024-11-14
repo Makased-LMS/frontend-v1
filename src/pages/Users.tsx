@@ -8,8 +8,10 @@ import { useDialogs } from '@toolpad/core';
 import ActionsMenu from '../ui/ActionsMenu';
 import { useDispatchUsers } from '../features/users/useDispatchUsers';
 import { Add } from '@mui/icons-material';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { filterOperators } from '../Enums/filterOperators';
+import AddUserDialog from '../ui/Dialogs/AddUserDialog';
+import ShowUserDetails from '../ui/Dialogs/ShowUserDetails';
 
 function Users() {
     const [filters, setFilters] = useState('')
@@ -99,12 +101,12 @@ function Users() {
             headerName: 'Actions',
             width: 80,
             cellClassName: 'actions',
-            getActions: ({ id }) => {
+            getActions: (value) => {
                 return [
-                    <ActionsMenu key={id}
+                    <ActionsMenu key={value.id}
                         items={[
-                            { title: 'Edit', onClick: () => handleEdit(id) },
-                            { title: 'Delete', onClick: () => handleDelete(id) }
+                            { title: 'Edit', onClick: () => handleEdit(value.row) },
+                            { title: 'Delete', onClick: () => handleDelete(value.id) }
                         ]}
                     />
                 ];
@@ -112,9 +114,12 @@ function Users() {
         }
     ];
 
+    const openUsersDialog = async () => {
+        await dialogs.open(AddUserDialog)
+    }
 
-    const handleEdit = (id) => {
-        navigate(`${id}`)
+    const handleEdit = async (data) => {
+        await dialogs.open(AddUserDialog, { user: data })
     }
 
     const handleDelete = async (id) => {
@@ -148,11 +153,10 @@ function Users() {
                     Users
                 </Typography>
                 <Button
-                    onClick={() => usersDispatch({ action: 'add' })}
+                    onClick={openUsersDialog}
                     variant='contained' endIcon={<Add />}>Add user</Button>
             </Grid>
             <DataGrid
-
                 loading={fetchingUsers || dispatchingUser}
                 rows={users?.items}
                 columns={columns}
@@ -166,11 +170,14 @@ function Users() {
                     })
 
                     if (confirmed)
-                        navigate(`${data.id}`)
+                        await dialogs.open(ShowUserDetails, { user: data.row })
                 }}
                 sx={{
                     width: '100%',
-                    overflow: 'auto'
+                    overflow: 'auto',
+                    '.MuiDataGrid-columnHeader, .MuiDataGrid-filler, .MuiDataGrid-scrollbarFiller': {
+                        bgcolor: 'primary.light'
+                    }
                 }}
                 pageSizeOptions={[5, 10, 25, 50]}
                 paginationMode='server'
@@ -186,7 +193,6 @@ function Users() {
                 onFilterModelChange={
                     (model) => {
                         const item = model.items[0];
-                        console.log(model);
                         let newFilters = '';
                         if (item?.value?.length && item.operator === 'isAnyOf') {
                             newFilters = `${item.field}==`

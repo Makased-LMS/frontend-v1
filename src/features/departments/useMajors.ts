@@ -5,8 +5,10 @@ export function useMajors(departmentId: number) {
 
     const { isFetching, data: majors } = useQuery({
         queryKey: ["majors", departmentId],
-        queryFn: async () => {                
-            return await getMajors(departmentId)       
+        queryFn: async () => {   
+            if(departmentId)             
+                return await getMajors(departmentId)
+            return []       
         },
     });
 

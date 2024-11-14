@@ -44,7 +44,7 @@ export function useDispatchUsers() {
                 severity: 'error',
                 autoHideDuration: 3000,
             });
-        }
+        },
     });
 
     return { usersDispatch, isLoading: isPending };

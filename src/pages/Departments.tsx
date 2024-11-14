@@ -50,20 +50,23 @@ function Departments() {
             </Grid>
             <TableContainer sx={{ maxHeight: '65dvh', overflow: 'auto' }}>
                 <Table stickyHeader >
-                    <TableHead sx={{ bgcolor: 'whiteSmoke' }}>
+                    <TableHead>
                         <TableRow >
                             <TableCell width={80} sx={{
-                                fontSize: 18
+                                fontSize: 18,
+                                bgcolor: 'primary.light'
                             }}>
                                 ID
                             </TableCell>
                             <TableCell sx={{
-                                fontSize: 18
+                                fontSize: 18,
+                                bgcolor: 'primary.light'
                             }}>
                                 Name
                             </TableCell>
                             <TableCell width={40} sx={{
-                                fontSize: 18
+                                fontSize: 18,
+                                bgcolor: 'primary.light'
                             }}>
                                 Actions
                             </TableCell>
