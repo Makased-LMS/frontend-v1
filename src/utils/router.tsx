@@ -4,7 +4,7 @@ import PrivateRoute from "../ui/PrivateRoute";
 import PublicRoute from "../ui/PublicRoute";
 import AppLayout from "../ui/AppLayout";
 import ErrorBoundary from "../Error/ErrorBoundary.tsx";
-
+import TryingComponents from "../pages/Dashboard/TryingComponents.tsx";
 
 const PageNotFound = lazy(() => import("../pages/PageNotFound"));
 const Login = lazy(() => import("../pages/Login"));
@@ -22,101 +22,103 @@ const Quiz = lazy(() => import("../features/quiz/Quiz"));
 const Departments = lazy(() => import("../pages/Departments"));
 const Department = lazy(() => import("../features/departments/Department"));
 
-
 const router = createBrowserRouter([
-    {
-        path: '/*',
-        element:
-            <ErrorBoundary>
-                <Outlet />
-            </ErrorBoundary>,
+  {
+    path: "/*",
+    element: (
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
+    ),
+    children: [
+      {
+        element: (
+          <PrivateRoute checkAuth="true">
+            <Outlet />
+          </PrivateRoute>
+        ),
         children: [
-            {
-                element:
-                    <PrivateRoute checkAuth="true">
-                        <Outlet />
-                    </PrivateRoute>,
+          {
+            element: <AppLayout />,
+            children: [
+              { index: true, element: <Navigate to="dashboard" replace /> },
+              { path: "dashboard", element: <Dashboard /> },
+              { path: "account", element: <Account /> },
+              { path: "courses", element: <Courses /> },
+              { path: "try", element: <TryingComponents /> },
+              {
+                path: "course",
                 children: [
-                    {
-                        element:
-                            <AppLayout />,
-                        children: [
-                            { index: true, element: <Navigate to="dashboard" replace /> },
-                            { path: 'dashboard', element: <Dashboard /> },
-                            { path: 'account', element: <Account /> },
-                            { path: 'courses', element: <Courses /> },
-                            {
-                                path: 'course',
-                                children: [
-                                    { index: true, element: <Course /> },
-                                    { path: 'quiz/:quizId', element: <Quiz /> },
-                                ]
-                            },
-                            // Staff routes
-                            {
-                                element:
-                                    <PrivateRoute allowedRoles={['Staff']} >
-                                        <Outlet />
-                                    </PrivateRoute>,
-                                children: [
-                                    { path: 'my-certificates', element: <MyCertificates /> },
-                                ]
-                            },
-                            // Admin routes
-                            {
-                                element:
-                                    <PrivateRoute allowedRoles={['Admin']} >
-                                        <Outlet />
-                                    </PrivateRoute>,
-                                children: [
-                                    { path: 'users', element: <Users /> },
-                                    {
-                                        path: 'departments', children: [
-                                            { index: true, element: <Departments /> },
-                                            { path: ':departmentId', element: <Department /> },
-                                        ]
-                                    },
-                                ]
-                            },
-                            // SubAdmin & Staff routes
-                            {
-                                element:
-                                    <PrivateRoute allowedRoles={['SubAdmin', 'Staff']} >
-                                        <Outlet />
-                                    </PrivateRoute>,
-                                children: [
-                                    { path: 'my-courses', element: <MyCourses /> },
-                                ]
-                            },
-                            // SubAdmin & Admin routes
-                            {
-                                element:
-                                    <PrivateRoute allowedRoles={['Admin', 'SubAdmin']} >
-                                        <Outlet />
-                                    </PrivateRoute>,
-                                children: [
-                                    { path: 'certificates', element: <Certificates /> },
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            },
-            // Guest Routes
-            {
-                element: <PublicRoute />,
+                  { index: true, element: <Course /> },
+                  { path: "quiz/:quizId", element: <Quiz /> },
+                ],
+              },
+              // Staff routes
+              {
+                element: (
+                  <PrivateRoute allowedRoles={["Staff"]}>
+                    <Outlet />
+                  </PrivateRoute>
+                ),
                 children: [
-                    { path: 'login', element: <Login /> },
-                    { path: 'forgot-password', element: <ForgotPassword /> },
-                    { path: 'reset-password', element: <ResetPassword /> },
-                ]
-            },
-            {
-                element: <PageNotFound />,
-                path: "*"
-            }
-        ]
-    }
+                  { path: "my-certificates", element: <MyCertificates /> },
+                ],
+              },
+              // Admin routes
+              {
+                element: (
+                  <PrivateRoute allowedRoles={["Admin"]}>
+                    <Outlet />
+                  </PrivateRoute>
+                ),
+                children: [
+                  { path: "users", element: <Users /> },
+                  {
+                    path: "departments",
+                    children: [
+                      { index: true, element: <Departments /> },
+                      { path: ":departmentId", element: <Department /> },
+                    ],
+                  },
+                ],
+              },
+              // SubAdmin & Staff routes
+              {
+                element: (
+                  <PrivateRoute allowedRoles={["SubAdmin", "Staff"]}>
+                    <Outlet />
+                  </PrivateRoute>
+                ),
+                children: [{ path: "my-courses", element: <MyCourses /> }],
+              },
+              // SubAdmin & Admin routes
+              {
+                element: (
+                  <PrivateRoute allowedRoles={["Admin", "SubAdmin"]}>
+                    <Outlet />
+                  </PrivateRoute>
+                ),
+                children: [{ path: "certificates", element: <Certificates /> }],
+              },
+            ],
+          },
+        ],
+      },
+      // Guest Routes
+      {
+        element: <PublicRoute />,
+        children: [
+          { path: "login", element: <Login /> },
+          { path: "forgot-password", element: <ForgotPassword /> },
+          { path: "reset-password", element: <ResetPassword /> },
+        ],
+      },
+      {
+        element: <PageNotFound />,
+        path: "*",
+      },
+    ],
+  },
 ]);
 
 export default router;
