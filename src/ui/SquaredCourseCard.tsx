@@ -8,6 +8,7 @@ import {
   Divider,
   Grid2 as Grid,
   IconButton,
+  Grid2,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import HorizIconOptions from "./HorizIconOptions";
@@ -22,10 +23,12 @@ function CourseCard(props: CourseCardProps) {
   const { courseId, courseName, department, progress } = props; // todo implementing course hook (react query)
 
   return (
-    <Card
+    <Grid2
+      size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+      component={Card}
       variant="outlined"
       sx={{
-        width: { xs: "20rem", sm: "30rem" },
+        // width: { xs: "20rem", sm: "30rem" },
         height: "26rem",
         transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
@@ -107,7 +110,7 @@ function CourseCard(props: CourseCardProps) {
           >{`${progress}% `}</Typography>
         </Box>
       </CardContent>
-    </Card>
+    </Grid2>
   );
 }
 

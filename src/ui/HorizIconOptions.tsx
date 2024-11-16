@@ -54,8 +54,8 @@ const HorizIconOptions: React.FC<HorizIconOptions> = ({}) => {
             },
           },
         }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }} // Align menu dropdown
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }} // Attach to button's bottom
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleClose}>Start Learning</MenuItem>
         <Divider />
