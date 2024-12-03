@@ -1,11 +1,13 @@
 import { Notifications } from "@mui/icons-material"
 import { Badge, Button, Divider, FormHelperText, Grid2 as Grid, IconButton, Link, Menu, MenuItem, Tooltip, Typography } from "@mui/material"
 import { useSysNotifications } from "../features/notifications/useSysNotifications"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function NotificationsToolbarAction() {
     const { notifications } = useSysNotifications();
+    const unread = notifications?.filter((val) => val.read == 0) || []
+    console.log(unread);
 
     const navigate = useNavigate();
 
@@ -21,13 +23,16 @@ function NotificationsToolbarAction() {
     return (
         <>
             <Tooltip title="Notifications">
+
                 <IconButton
                     aria-controls={open ? 'notifications-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
                     onClick={handleClick}
                 >
-                    <Notifications />
+                    <Badge color="primary" variant="dot" invisible={unread.length == 0}>
+                        <Notifications />
+                    </Badge>
                 </IconButton>
             </Tooltip>
             <Menu
