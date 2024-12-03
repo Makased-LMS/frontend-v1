@@ -40,6 +40,10 @@ function NotificationsToolbarAction() {
                 open={open}
                 onClose={handleClose}
             >
+                <Typography paddingX={2} variant="h6" fontWeight={'700'} color="primary.main" textAlign={'center'}>
+                    Notifications
+                </Typography>
+                <Divider />
                 {
                     notifications?.map((item, ind) =>
                         <Grid container flexDirection={'column'} component={MenuItem}
