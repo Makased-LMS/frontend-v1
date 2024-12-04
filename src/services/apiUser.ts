@@ -21,12 +21,9 @@ export type User = {
 
 export async function getCurrentUser() {
     const accessToken = getAccessToken();
-    const refreshToken = getRefreshToken();
 
     if (!accessToken) {
-        if (refreshToken)
-            revokeRefreshToken()
-
+        clearTokens();
         return null;
     }
 

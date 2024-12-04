@@ -23,6 +23,7 @@ axiosAPI.interceptors.response.use(response => {
     return response;
 }, async (error) => {
     const request = error.request;
+    
     if (request.__URL__.includes('refresh-token')) {
         throw new AxiosError(error)
     }
