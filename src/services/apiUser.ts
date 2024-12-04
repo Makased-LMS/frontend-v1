@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import axiosAPI from "../API/axiosAPI";
 import { clearTokens, getAccessToken, getRefreshToken } from "../utils/handleTokens";
 import { convertToJson } from "../utils/helpers";
@@ -64,7 +65,7 @@ export async function updateProfilePicture(file, oldPic){
 
     const fileId : string = response.data.fileId
 
-    axiosAPI.patch('/user/profile-picture',
+    return await axiosAPI.patch('/user/profile-picture',
         [
             {
                 path: "imageId",
@@ -77,10 +78,21 @@ export async function updateProfilePicture(file, oldPic){
                     }
         }
     )
-    
 
     // axiosAPI.delete(`/files/${oldPic}`) TODO: implementing delete file func
 
+}
+
+
+export async function changePassword(currentPassword: string, newPassword: string){
+    return await axiosAPI.post('/identity/change-password', {
+        currentPassword,
+        newPassword
+    },{
+        headers: {
+                'Content-Type': 'application/json-patch+json',
+                }
+    })
 }
 
 type searchPayload = {
