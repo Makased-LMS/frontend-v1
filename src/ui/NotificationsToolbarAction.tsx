@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 function NotificationsToolbarAction() {
     const { notifications } = useSysNotifications();
     const unread = notifications?.filter((val) => val.read == 0) || []
-    console.log(unread);
 
     const navigate = useNavigate();
 
