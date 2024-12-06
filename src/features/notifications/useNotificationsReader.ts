@@ -1,18 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { changeNotificationStatus } from "../../services/apiNotifications";
 import { useNotifications } from "@toolpad/core";
+import { readNotification } from "../../services/apiNotifications";
 
-type readNotificationType = {
-    ids: string[],
-    newStatus: 0|1
-}
 
 export function useNotificationsReader() {
     const notifications = useNotifications()
     const queryClient = useQueryClient();
     const { mutateAsync: notificationsReader, isPending } = useMutation({
-        mutationFn: async ({ids, newStatus}: readNotificationType) => {
-            await changeNotificationStatus(ids, newStatus)
+        mutationFn: async (id: string) => {
+            await readNotification(id)
             queryClient.invalidateQueries({ queryKey:['notifications'] })
         },
         onError: (err) => {            

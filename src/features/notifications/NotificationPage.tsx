@@ -1,18 +1,21 @@
-import { useParams } from "react-router-dom";
-import { useSysNotification } from "./useSysNotification";
+import { Navigate, useParams } from "react-router-dom";
 import { Button, Card, Grid2 as Grid, Paper, Typography } from "@mui/material";
 import { useNotificationsReader } from "./useNotificationsReader";
 import { useEffect } from "react";
 
 function NotificationPage() {
     const { notificationId } = useParams();
-    const { notification } = useSysNotification(notificationId)
+
     const { notificationsReader } = useNotificationsReader();
 
     useEffect(() => {
-        notificationsReader({ ids: [notificationId], newStatus: 1 })
+        if (notificationId)
+            notificationsReader(notificationId)
+
     }, [notificationsReader, notificationId])
 
+    if (!notificationId)
+        return <Navigate replace to='/' />
     return (
         <Grid component={Paper} container flexDirection={'column'} padding={2} spacing={3} flex={1} margin={{ md: 2 }}>
             <Grid container justifyContent={'space-between'}>
