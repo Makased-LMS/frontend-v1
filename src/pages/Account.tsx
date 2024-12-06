@@ -32,7 +32,7 @@ function Account() {
 
   const sx = {
     // styling text field
-    width: "7.5rem",
+ 
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "primary.main", // Outline color
       borderRadius: "8px",
