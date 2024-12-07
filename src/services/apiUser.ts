@@ -89,16 +89,11 @@ export async function changePassword(currentPassword: string, newPassword: strin
     })
 }
 
-type searchPayload = {
+export type searchPayload = {
     "filters"?: string,
     "sorts"?: string,
     "page": number,
     "pageSize": number
-}
-
-const initialPayload: searchPayload = {
-    "page": 1,
-    "pageSize": 8
 }
 
 export async function searchUsers(payload:searchPayload = initialPayload) {
