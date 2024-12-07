@@ -23,16 +23,16 @@ import ChangePasswordDialog from "../ui/Dialogs/ChangePasswordDialog";
 function Account() {
   const { user, isLoading: fetchingUser } = useUser();
   const { usersDispatch, isLoading: updatingUser } = useDispatchUsers();
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, reset, formState: { errors: formErrors } } = useForm();
 
   const profileBtn = useRef(null);
-  const selected = watch("profilePicture");
+  const selected = watch("profilePicture")?.length > 0;
 
   const dialogs = useDialogs();
 
   const sx = {
     // styling text field
- 
+
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "primary.main", // Outline color
       borderRadius: "8px",
@@ -97,9 +97,22 @@ function Account() {
     },
   };
 
+  const isvalidFile = (profilePicture) => {
+    const allowedExtensions = ["jpg", "png"];
+    const fileExtension = profilePicture[0]?.name.split(".").pop().toLowerCase();
+    return allowedExtensions.includes(fileExtension)
+  }
+
   const updateProfile = async (data) => {
+    console.log(data);
+
     if (!data.profilePicture.length) {
       profileBtn?.current.click();
+      return;
+    }
+    if (!isvalidFile(data.profilePicture)) {
+      await dialogs.alert('Please upload a valid profile picture. (.jpg, .png)')
+      reset();
       return;
     }
 
@@ -112,11 +125,12 @@ function Account() {
       }
     );
 
-    if (confirmed)
+    if (confirmed) {
       await usersDispatch({
         action: "editProfilePic",
-        payload: { file: data.profilePicture[0], oldPicID: "none" },
+        payload: { file: data.profilePicture[0] },
       });
+    }
   };
 
   const openChengePasswordDialog = async () => {
@@ -252,7 +266,6 @@ function Account() {
               />
             </label>
           </Tooltip>
-
           <Button
             type="submit"
             size="small"

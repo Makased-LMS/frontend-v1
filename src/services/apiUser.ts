@@ -51,7 +51,7 @@ export async function fetchUser() {
     return await axiosAPI.get(`/users/${user.id}`)
 }
 
-export async function updateProfilePicture(file, oldPic){
+export async function updateProfilePicture(file){
     const formData = new FormData();
     formData.append('file', file);
     const response = await axiosAPI.post('/files', formData, {
@@ -61,7 +61,6 @@ export async function updateProfilePicture(file, oldPic){
     })
 
     const fileId : string = response.data.fileId
-
     return await axiosAPI.patch('/user/profile-picture',
         [
             {
@@ -75,8 +74,6 @@ export async function updateProfilePicture(file, oldPic){
                     }
         }
     )
-
-    // axiosAPI.delete(`/files/${oldPic}`) TODO: implementing delete file func
 
 }
 
