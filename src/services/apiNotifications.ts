@@ -7,12 +7,6 @@ let data = [
     { id: 4, title: "Web Development Overview", courseName: "Web Design 101", read: 0, date: "2024-12-04T00:00:00Z", link: "401" },
     { id: 5, title: "Networking Essentials", courseName: "Networking Basics", read: 1, date: "2024-12-05T00:00:00Z", link: "501" },
 ];
-const initialPayload = {
-    filters: "",
-    sorts: "",
-    page: 1,
-    pageSize: 6
-}
 
 type getNotificationsPayload = {
     filters?: string,
@@ -21,8 +15,12 @@ type getNotificationsPayload = {
     pageSize: number
 }
 
-export async function getNotifications(payload: getNotificationsPayload = initialPayload){
+export async function getNotifications(payload: getNotificationsPayload){
     return await axiosAPI.post('user/notifications', payload)
+}
+
+export async function getUnreadNotificationsCount(){
+    return await axiosAPI.get('user/notifications/unread/count')
 }
 
 export async function readNotification(id: string){
@@ -30,5 +28,5 @@ export async function readNotification(id: string){
 }
 
 export async function markAllNotificationsAsRead(){
-    //
+    return await axiosAPI.patch('user/notifications/is-read')
 }
