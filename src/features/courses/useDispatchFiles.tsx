@@ -11,7 +11,7 @@ export function useDispatchFiles() {
     const queryClient = useQueryClient();
     const notifications = useNotifications();
 
-    const { mutateAsync: filesDispatch, isPending, data } = useMutation({
+    const { mutateAsync: filesDispatch, isPending, data, isError, error } = useMutation({
         mutationFn: async ({ payload, action }: data) => {
             switch (action) {
                 case 'add': await addFile(payload.file); break;
@@ -40,5 +40,5 @@ export function useDispatchFiles() {
         }
     });
 
-    return { filesDispatch, isLoading: isPending, file: data };
+    return { filesDispatch, isLoading: isPending, file: data, isError, error };
 }
