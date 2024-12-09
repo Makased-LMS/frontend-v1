@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { searchPayload, searchUsers } from "../../services/apiUser";
 
 const initialPayload: searchPayload = {
-  "page": 1,
-  "pageSize": 8
+  page: 1,
+  pageSize: 8
 }
 
 export function useUsers(payload = initialPayload) {
