@@ -21,7 +21,6 @@ function StaffDashboard() {
       alignItems={"center"}
       component={Card}
       sx={{
-        width: "100%",
         margin: 1,
         borderRadius: 2,
         alignSelf: "center",
