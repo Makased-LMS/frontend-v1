@@ -173,16 +173,16 @@ function Account() {
                 value={user.workId}
                 size="small"
                 sx={sx}
+                focused
               />
             </Grid>
           </Grid>
           <Grid container spacing={2}>
             <TextField
-
               label="First name"
               variant="outlined"
               value={user.firstName}
-              readOnly
+              focused
               size="small"
               sx={sx1}
             />
@@ -190,7 +190,7 @@ function Account() {
               label="Middle name"
               variant="outlined"
               value={user.middleName}
-              readOnly
+              focused
               size="small"
               sx={sx1}
             />
@@ -200,6 +200,7 @@ function Account() {
               value={user.lastName}
               size="small"
               sx={sx1}
+              focused
             />
           </Grid>
           <Grid container>
@@ -209,6 +210,7 @@ function Account() {
               value={user.birthDate}
               size="small"
               sx={sx1}
+              focused
               slotProps={{
                 input: {
                   endAdornment: (
@@ -229,6 +231,7 @@ function Account() {
               value={levelNames[user.educationalLevel]}
               size="small"
               sx={eduS}
+              focused
             />
           </Grid>
         </Grid>
@@ -321,7 +324,8 @@ function Account() {
             variant="outlined"
             value={user.email}
             size="medium"
-            sx={{ ...sx1, width: "18rem" }}
+            focused
+            sx={{ ...sx1, width: "20rem" }}
           />
         </Grid>
       </Grid>
@@ -343,7 +347,7 @@ function Account() {
             label="Department"
             variant="outlined"
             value={user.department?.name || '---'}
-            readOnly
+            focused
             size="small"
             sx={{ ...sx1 }}
           />
@@ -351,7 +355,7 @@ function Account() {
             label="Major"
             variant="outlined"
             value={user.major?.name || '---'}
-            readOnly
+            focused
             size="small"
             sx={{ ...sx1 }}
           />
@@ -359,7 +363,7 @@ function Account() {
             label="Role"
             variant="outlined"
             value={roleNames[user.role]}
-            readOnly
+            focused
             size="small"
             sx={{ ...sx1 }}
           />
