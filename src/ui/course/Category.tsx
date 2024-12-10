@@ -7,10 +7,8 @@ import {
   AccordionSummary,
   Box,
   Button,
-  Fade,
   Grid2,
   Grow,
-  IconButton,
   List,
   Typography,
 } from "@mui/material";
@@ -19,12 +17,18 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MaterialListItem from "../../ui/course/MaterialListItem";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useState } from "react";
+import { useDialogs } from "@toolpad/core";
+import AddMaterialDialog from "../Dialogs/AddMaterialDialog";
 
 const Category: React.FC = () => {
+  const dialogs = useDialogs();
   const [expanded, setExpanded] = useState(false);
 
   const handleExpansion = () => {
     setExpanded((prevExpanded) => !prevExpanded);
+  };
+  const openAddMaterial = () => {
+    dialogs.open(AddMaterialDialog);
   };
   return (
     <>
@@ -125,6 +129,7 @@ const Category: React.FC = () => {
                   borderColor: "#008080",
                 },
               }}
+              onClick={openAddMaterial}
             >
               Add new material
             </Button>
