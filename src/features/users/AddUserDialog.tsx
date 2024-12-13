@@ -1,4 +1,4 @@
-import { Box, Chip, Dialog, DialogContent, DialogTitle, FormControl, Grid2 as Grid, List, ListItem, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Chip, Dialog, DialogContent, DialogTitle, Grid2 as Grid, MenuItem, TextField, Typography } from '@mui/material';
 import { MuiTelInput } from 'mui-tel-input'
 import { Controller, useForm } from 'react-hook-form';
 import AddUserDialogStepper from './Admin/AddUserDialogStepper';
@@ -221,7 +221,7 @@ function AddUserDialog({ payload, open, onClose }) {
                                     sx={{
                                         minWidth: '200px',
                                     }}
-                                    defaultValue={majors.length > 0 ? user?.major?.id : ''}
+                                    defaultValue={majors?.length > 0 ? user?.major?.id : ''}
                                 >
                                     {majors?.map((option) => (
                                         <MenuItem key={option.id} value={option.id}>

@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useDispatchMajors } from '../../features/majors/useDispatchMajors';
+import { useDispatchMajors } from './useDispatchMajors';
 
 function AddMajorDialog({ payload, open, onClose }) {
     const { register, handleSubmit } = useForm();

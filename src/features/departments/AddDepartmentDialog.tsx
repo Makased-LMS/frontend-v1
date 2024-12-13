@@ -1,7 +1,7 @@
 import { Add } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { useDispatchDepartment } from '../../features/departments/useDispatchDepartment';
+import { useDispatchDepartment } from './useDispatchDepartment';
 
 function AddDepartmentDialog({ payload, open, onClose }) {
     const { register, handleSubmit } = useForm();
