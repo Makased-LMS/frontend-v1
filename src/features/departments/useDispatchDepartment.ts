@@ -11,7 +11,7 @@ export function useDispatchDepartment() {
     const queryClient = useQueryClient();
     const notifications = useNotifications();
 
-    const { mutateAsync: departmentDispatch, isPending, data } = useMutation({
+    const { mutateAsync: departmentDispatch, isPending, data, error, isError } = useMutation({
         mutationFn: async ({payload, action}: data) => {
             switch(action){
                 case 'add': await addDepartment(payload.name); break; 
@@ -40,5 +40,5 @@ export function useDispatchDepartment() {
         }
     });
 
-    return { departmentDispatch, isLoading: isPending, department: data };
+    return { departmentDispatch, isLoading: isPending, department: data, error, isError };
 }

@@ -5,6 +5,7 @@ import {
   Divider,
   Grid2 as Grid,
   InputAdornment,
+  Paper,
   TextField,
   Tooltip,
   Typography,
@@ -19,11 +20,11 @@ import { levelNames } from "../Enums/educationLevels";
 import { AddAPhoto, Lock, NewReleases } from "@mui/icons-material";
 import { useDispatchUsers } from "../features/users/useDispatchUsers";
 import { MuiTelInput } from "mui-tel-input";
-import ChangePasswordDialog from "../ui/Dialogs/ChangePasswordDialog";
+import ChangePasswordDialog from "../features/users/ChangePasswordDialog";
 function Account() {
   const { user, isLoading: fetchingUser } = useUser();
   const { usersDispatch, isLoading: updatingUser } = useDispatchUsers();
-  const { register, handleSubmit, watch, reset, formState: { errors: formErrors } } = useForm();
+  const { register, handleSubmit, watch, reset } = useForm();
 
   const profileBtn = useRef(null);
   const selected = watch("profilePicture")?.length > 0;
@@ -139,12 +140,12 @@ function Account() {
 
   return (
     <Grid
+      component={Paper}
       container
       flexDirection={"column"}
       spacing={2}
       sx={{
         flex: 1,
-        bgcolor: "#fafafad2",
         padding: 2,
       }}
     >

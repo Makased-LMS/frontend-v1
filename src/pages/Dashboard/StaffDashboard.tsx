@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Button,
   Card,
@@ -10,8 +9,8 @@ import DataPieChart from "../../ui/DataPieChart";
 
 import CoursesStatusCard from "../../ui/CoursesStatusCard";
 import { Refresh } from "@mui/icons-material";
-import AddMaterialDialog from '../../ui/Dialogs/AddMaterialDialog';
 import { useDialogs } from '@toolpad/core';
+import AddMaterialDialog from "../../features/courses/AddMaterialDialog";
 
 function StaffDashboard() {
   const dialogs = useDialogs();
@@ -21,7 +20,6 @@ function StaffDashboard() {
       alignItems={"center"}
       component={Card}
       sx={{
-        margin: 1,
         borderRadius: 2,
         alignSelf: "center",
       }}

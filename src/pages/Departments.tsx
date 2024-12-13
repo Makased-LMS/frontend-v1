@@ -4,10 +4,10 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import { useDepartments } from '../features/departments/useDepartments';
 import { useDialogs } from '@toolpad/core';
-import AddDepartmentDialog from '../ui/Dialogs/AddDepartmentDialog';
 import ActionsMenu from '../ui/ActionsMenu';
 import SpinnerLoader from '../ui/SpinnerLoader';
 import { useDispatchDepartment } from '../features/departments/useDispatchDepartment';
+import AddDepartmentDialog from '../features/departments/AddDepartmentDialog';
 function Departments() {
     const { departments, isLoading: fetchingDeps } = useDepartments();
     const { departmentDispatch, isLoading: dispatchingDeps } = useDispatchDepartment()

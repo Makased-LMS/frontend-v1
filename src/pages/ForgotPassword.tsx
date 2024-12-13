@@ -32,10 +32,8 @@ const ForgotPassword = () => {
                     title: 'Link sent'
                 });
                 if (confirmed) {
-                    notifications.show('Please verify if the work ID is correct', {
-                        severity: 'warning',
-                        autoHideDuration: 3000,
-                    });
+                    forgotPassword(workId)
+                    await dialogs.alert(`The reset link sent again, if you didn't recieve the link, please check spam box.`)
                     return;
                 }
                 navigate('/login')

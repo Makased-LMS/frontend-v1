@@ -1,13 +1,13 @@
 import { Box, Chip, Dialog, DialogContent, DialogTitle, FormControl, Grid2 as Grid, List, ListItem, MenuItem, TextField, Typography } from '@mui/material';
 import { MuiTelInput } from 'mui-tel-input'
 import { Controller, useForm } from 'react-hook-form';
-import AddUserDialogStepper from '../../features/users/Admin/AddUserDialogStepper';
+import AddUserDialogStepper from './Admin/AddUserDialogStepper';
 import { useState } from 'react';
 import { levels } from '../../Enums/educationLevels';
 import { roles } from '../../Enums/roles';
-import { useMajors } from '../../features/majors/useMajors';
-import { useDepartments } from '../../features/departments/useDepartments';
-import { useDispatchUsers } from '../../features/users/useDispatchUsers';
+import { useMajors } from '../majors/useMajors';
+import { useDepartments } from '../departments/useDepartments';
+import { useDispatchUsers } from './useDispatchUsers';
 import { gender } from '../../Enums/gender';
 
 function AddUserDialog({ payload, open, onClose }) {
