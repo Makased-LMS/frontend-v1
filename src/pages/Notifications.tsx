@@ -24,7 +24,7 @@ function Notifications() {
     }
 
     return (
-        <Grid component={Paper} container flexDirection={'column'} padding={2} spacing={3} flex={1} margin={{ md: 2 }}>
+        <Grid component={Paper} container flexDirection={'column'} padding={2} spacing={3} flex={1}>
             <Grid container justifyContent={'space-between'}>
                 <Typography variant="h4" color="primary.main">
                     Notifications
