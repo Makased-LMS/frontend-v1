@@ -11,8 +11,8 @@ import { useDispatchUsers } from './useDispatchUsers';
 import { gender } from '../../Enums/gender';
 
 function AddUserDialog({ payload, open, onClose }) {
-    const { usersDispatch, isError } = useDispatchUsers();
-    const { register, handleSubmit, watch, control, setError, formState: { isLoading, isValid, isValidating, errors: formErrors } } = useForm();
+    const { usersDispatch, isError, isLoading: dispatchingUser } = useDispatchUsers();
+    const { register, handleSubmit, watch, control, formState: { isLoading, isValid, isValidating, errors: formErrors } } = useForm();
     const [activeStep, setActiveStep] = useState(0);
     const { majors, isLoading: fetchingMajors } = useMajors(watch('departmentId'))
     const { departments, isLoading: fetchingDeps } = useDepartments();
@@ -41,7 +41,7 @@ function AddUserDialog({ payload, open, onClose }) {
                 user
             </DialogTitle>
             <DialogContent>
-                <AddUserDialogStepper activeStep={activeStep} setActiveStep={setActiveStep} isValid={isValid} isEdit={!!user}>
+                <AddUserDialogStepper activeStep={activeStep} setActiveStep={setActiveStep} isValid={isValid} isEdit={!!user} isLoading={dispatchingUser || isValidating}>
                     <Box display={activeStep === 0 ? 'box' : 'none'} sx={{ justifySelf: 'start' }}>
                         <Typography variant='h5' mt={3} mb={1} >
                             User Information

@@ -39,7 +39,7 @@ function Departments() {
 
     return (
         <Grid component={Paper} container flexDirection={'column'} size={{ xs: 12 }} padding={2} spacing={5} flex={1}>
-            <Grid container justifyContent={'space-between'} padding={1} sx={{
+            <Grid container justifyContent={'space-between'} sx={{
                 flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center'
             }}>

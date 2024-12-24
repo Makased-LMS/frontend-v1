@@ -132,16 +132,18 @@ function Users() {
     }
 
     return (
-        <Grid component={Paper} container alignSelf={'center'} flexDirection={'column'} height={'90dvh'} spacing={2} sx={{
-            padding: 2,
-            width: {
-                xs: '100dvw',
-                sm: '90dvw',
-                md: '75dvw',
-                lg: '81dvw',
-                xl: '84dvw'
-            }
-        }}
+        <Grid component={Paper} container alignSelf={'center'} flexDirection={'column'}
+            spacing={2} sx={{
+                height: 'calc(100vh - 85px)',
+                padding: 2,
+                width: {
+                    xs: '100dvw',
+                    sm: '90dvw',
+                    md: '75dvw',
+                    lg: '81dvw',
+                    xl: '84dvw'
+                }
+            }}
         >
             <Grid container justifyContent={'space-between'} padding={1} sx={{
                 flexDirection: { xs: 'column', sm: 'row' },

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Button,
@@ -21,10 +21,13 @@ import { AddAPhoto, Lock, NewReleases } from "@mui/icons-material";
 import { useDispatchUsers } from "../features/users/useDispatchUsers";
 import { MuiTelInput } from "mui-tel-input";
 import ChangePasswordDialog from "../features/users/ChangePasswordDialog";
+import LoadingButton from "@mui/lab/LoadingButton";
 function Account() {
   const { user, isLoading: fetchingUser } = useUser();
   const { usersDispatch, isLoading: updatingUser } = useDispatchUsers();
   const { register, handleSubmit, watch, reset } = useForm();
+
+  const [currImage, setCurrImage] = useState(user?.profilePicture?.path);
 
   const profileBtn = useRef(null);
   const selected = watch("profilePicture")?.length > 0;
@@ -103,6 +106,22 @@ function Account() {
     const fileExtension = profilePicture[0]?.name.split(".").pop().toLowerCase();
     return allowedExtensions.includes(fileExtension)
   }
+
+  useEffect(() => {
+    const handleFileChange = (files) => {
+      const file = files[0]; // Get the selected file
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setCurrImage(reader.result); // Set the preview URL
+        };
+        reader.readAsDataURL(file); // Read file as Data URL
+      }
+    };
+
+    handleFileChange(watch('profilePicture'))
+  }, [watch])
+
 
   const updateProfile = async (data) => {
     console.log(data);
@@ -258,7 +277,7 @@ function Account() {
               <Avatar
                 sx={{ width: 100, height: 100 }}
                 alt="user"
-                src={user.profilePicture?.path}
+                src={currImage}
               />
               <VisuallyHiddenInput
                 type="file"
@@ -271,15 +290,18 @@ function Account() {
               />
             </label>
           </Tooltip>
-          <Button
+          <LoadingButton
             type="submit"
             size="small"
+            disabled={updatingUser}
+            loading={updatingUser}
             variant={selected ? "contained" : "outlined"}
             endIcon={selected ? <NewReleases /> : <AddAPhoto />}
+            loadingPosition="end"
           >
             {selected ? "Update " : "Change "}
             Picture
-          </Button>
+          </LoadingButton>
           <Button
             size="small"
             variant="contained"

@@ -17,7 +17,7 @@ export function useDispatchDepartment() {
                 case 'add': await addDepartment(payload.name); break; 
                 case 'edit': await editDepartment(payload.id, payload.name); break; 
                 case 'delete': await deleteDepartment(payload.id); break;
-                case 'get': return await getDepartment(payload.id)
+                case 'get': return await getDepartment(payload.id);
                 default: throw new Error('Unknown action')
             }
         },

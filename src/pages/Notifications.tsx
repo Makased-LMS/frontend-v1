@@ -29,10 +29,10 @@ function Notifications() {
                 <Typography variant="h4" color="primary.main">
                     Notifications
                 </Typography>
-                <Button variant="contained" onClick={markAllAsRead}>Mark all as read</Button>
+                <Button variant="contained" size={'small'} onClick={markAllAsRead}>Mark all as read</Button>
             </Grid>
 
-            <Grid container flexDirection={'column'} spacing={0}>
+            <Grid container flexDirection={'column'} spacing={0} borderTop={2} borderColor={'primary.main'} paddingTop={2}>
                 {
                     notifications?.items.map((item, ind) =>
                         <Grid container flexDirection={'column'}
@@ -42,7 +42,8 @@ function Notifications() {
                                 '&:hover': {
                                     bgcolor: 'whiteSmoke',
                                     cursor: 'pointer'
-                                }
+                                },
+                                borderBottom: 1
                             }}
                             key={ind}
                             onClick={
@@ -63,9 +64,9 @@ function Notifications() {
                                         {item.content}
                                     </Typography>
 
-                                    <FormHelperText sx={{ marginTop: 2 }}>
+                                    <Typography fontSize={12} color="grey" marginTop={2} >
                                         {convertDate(item.createdAtUtc)}
-                                    </FormHelperText>
+                                    </Typography>
                                 </Grid>
                                 {
                                     !item.isRead
@@ -76,6 +77,13 @@ function Notifications() {
                             </Grid>
                         </Grid>
                     )
+                }
+
+                {
+                    notifications?.items.length === 0 &&
+                    <Typography variant="h6">
+                        You don't have any notification yet.😎
+                    </Typography>
                 }
             </Grid>
         </Grid>

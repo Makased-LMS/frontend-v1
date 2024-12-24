@@ -9,11 +9,8 @@ import DataPieChart from "../../ui/DataPieChart";
 
 import CoursesStatusCard from "../../ui/CoursesStatusCard";
 import { Refresh } from "@mui/icons-material";
-import { useDialogs } from '@toolpad/core';
-import AddMaterialDialog from "../../features/courses/AddMaterialDialog";
 
 function StaffDashboard() {
-  const dialogs = useDialogs();
   return (
     <Grid
       container
@@ -26,7 +23,7 @@ function StaffDashboard() {
     >
       <Grid container component={CardContent} spacing={2} width={"100%"}>
         <Grid container justifyContent={"end"} size={{ xs: 12 }}>
-          <Button startIcon={<Refresh />} variant="contained" onClick={() => dialogs.open(AddMaterialDialog)}>
+          <Button startIcon={<Refresh />} variant="contained">
             Refresh Data
           </Button>
         </Grid>
