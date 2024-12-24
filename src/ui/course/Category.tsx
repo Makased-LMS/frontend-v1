@@ -7,7 +7,7 @@ import {
   AccordionSummary,
   Box,
   Button,
-  Grid2,
+  Grid2 as Grid,
   Grow,
   List,
   Typography,
@@ -19,28 +19,43 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useState } from "react";
 import { useDialogs } from "@toolpad/core";
 import AddMaterialDialog from "../../features/courses/AddMaterialDialog";
+import { useUser } from "../../features/users/useUser";
+import { roleNames } from "../../Enums/roles";
 
-const Category: React.FC = () => {
+interface CategoryProps {
+  section: {
+    id: number,
+    title: string
+    index: number,
+    sectionParts: []
+  }
+}
+
+
+const Category: React.FC<CategoryProps> = ({ section }) => {
   const dialogs = useDialogs();
+
+  const { user } = useUser();
+
   const [expanded, setExpanded] = useState(false);
 
   const handleExpansion = () => {
     setExpanded((prevExpanded) => !prevExpanded);
   };
-  const openAddMaterial = () => {
-    dialogs.open(AddMaterialDialog);
+  const openAddMaterial = async () => {
+    await dialogs.open(AddMaterialDialog, { sectionId: section.id });
   };
   return (
-    <>
+    <Grid container flexDirection={'column'} padding={1.5} border={2} borderRadius={2} borderColor={'primary.light'}>
       <Accordion
         expanded={expanded}
         onChange={handleExpansion}
-        slots={{ transition: Grow as AccordionSlots["transition"] }}
-        slotProps={{ transition: { timeout: 400 } }}
+        // slots={{ transition: Grow as AccordionSlots["transition"] }}
+        slotProps={{ transition: { timeout: 600 } }}
         sx={[
           {
+            borderRadius: 5,
             // Curved corners on the overall Accordion component
-            borderRadius: 1,
             overflow: "hidden", // Ensures that contents respect the rounded corners
           },
           expanded
@@ -64,7 +79,7 @@ const Category: React.FC = () => {
       >
         <Box
           sx={{
-            backgroundColor: "primary.main",
+            backgroundColor: "primary.light",
             // padding: 1,
             display: "flex",
             alignItems: "center",
@@ -81,7 +96,6 @@ const Category: React.FC = () => {
                 sx={{
                   width: "26px",
                   height: "26px",
-                  backgroundColor: "white",
                   borderRadius: "50%",
                 }}
               />
@@ -90,69 +104,61 @@ const Category: React.FC = () => {
             id="panel2-header"
           >
             <Typography
+              variant="h6"
               sx={{ ml: 1 }}
               fontWeight="bold"
-              color="white"
-              fontSize={18}
+              color="primary.main"
             >
-              Category 1
+              {section.title}
             </Typography>
           </AccordionSummary>
         </Box>
         <AccordionDetails>
           {/* Materials : )  */}
           <List sx={{ padding: 0 }}>
-            <MaterialListItem isLink={true} isFile={false} />
-            <MaterialListItem isLink={false} isFile={true} />
-            <MaterialListItem isLink={true} isFile={false} />
+            {
+              section.sectionParts?.map((sectionPart) => <MaterialListItem key={sectionPart.id} sectionPart={sectionPart} />)
+            }
+
           </List>
 
-          <Grid2
-            container
-            spacing={1}
-            sx={{
-              padding: 2,
-
-              borderTop: "1px solid #E0E0E0",
-            }}
-          >
-            <Button
-              variant="outlined"
-              startIcon={<AddCircleOutlineIcon />}
+          {
+            roleNames[user?.role] !== 'Staff' &&
+            <Grid
+              container
+              spacing={1}
+              flexDirection={{ xs: 'column', sm: 'row' }}
               sx={{
-                borderColor: "#008080",
-                color: "#008080",
-                textTransform: "none",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#E0F7F7",
-                  borderColor: "#008080",
-                },
-              }}
-              onClick={openAddMaterial}
-            >
-              Add new material
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<QuizIcon />}
-              sx={{
-                borderColor: "#008080",
-                color: "#008080",
-                textTransform: "none",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: "#E0F7F7",
-                  borderColor: "#008080",
-                },
+                padding: 2,
+                borderTop: "1px solid #E0E0E0",
               }}
             >
-              Add new Quiz
-            </Button>
-          </Grid2>
+              <Button
+                variant="outlined"
+                startIcon={<AddCircleOutlineIcon />}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: "bold",
+                }}
+                onClick={openAddMaterial}
+              >
+                Add new material
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<QuizIcon />}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: "bold",
+                }}
+              >
+                Add new Quiz
+              </Button>
+            </Grid>
+          }
         </AccordionDetails>
-      </Accordion>
-    </>
+      </Accordion >
+    </Grid>
   );
 };
 

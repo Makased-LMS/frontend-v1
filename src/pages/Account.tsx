@@ -124,7 +124,6 @@ function Account() {
 
 
   const updateProfile = async (data) => {
-    console.log(data);
 
     if (!data.profilePicture.length) {
       profileBtn?.current.click();

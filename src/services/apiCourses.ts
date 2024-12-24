@@ -1,11 +1,13 @@
+import { AxiosError } from "axios";
 import axiosAPI from "../API/axiosAPI";
+import { addFile } from "./apiFiles";
 
 export async function getCourse(courseId: string){
     return await axiosAPI.get(`/courses/${courseId}`)
 }
 
 export async function searchCourses(query){
-    return await axiosAPI.post(`/courses/search`)
+    return await axiosAPI.post(`/courses/search`, query)
 }
 
 export async function checkCourseFinish(courseId: string){
@@ -63,7 +65,41 @@ export async function deleteSection(courseId: string, sectionId: string){
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function addSectionPart(sectionId: string, payload){
-    return await axiosAPI.post(`/sections/${sectionId}/parts`, payload);
+    console.log(payload);
+    
+    const { materialType, file, title, link, questions } = payload;
+    
+    let newPayload = {
+        title,
+        materialType
+    }
+
+    if(materialType === 'File'){
+        const fileId : string =  (await addFile(file)).data.fileId
+        newPayload = {
+            ...newPayload,
+            fileId
+        }
+    }
+
+    else if(materialType === 'Link'){
+        newPayload = {
+            ...newPayload,
+            link
+        }
+    }
+    else if(materialType === 'Exam'){
+        newPayload = {
+            ...newPayload,
+            questions
+        }
+    }
+
+    else{
+        return new AxiosError('Invalid Material Type')
+    }
+
+    return await axiosAPI.post(`/sections/${sectionId}/parts`, newPayload);
 }
 
 export async function getSectionPart(sectionId: string, sectionPartId: string){

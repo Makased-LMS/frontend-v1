@@ -1,45 +1,73 @@
 import React from "react";
-import { Box, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Grid2 as Grid, Link, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import MarkDone from "./MarkDone";
 import DescriptionIcon from "@mui/icons-material/Description";
-import { Link } from "react-router-dom";
+import { Quiz } from "@mui/icons-material";
+import { useUser } from "../../features/users/useUser";
+import { roleNames } from "../../Enums/roles";
+import { Link as RouterLink } from "react-router-dom";
 interface MaterialListItemProps {
-  isLink: boolean;
-  isFile: boolean;
+  sectionPart: {
+    id: number,
+    title: string,
+    index: number,
+    materialType: number,
+    file?: {
+      id: string,
+      name: string,
+      contentType: string,
+      extension: string,
+      path: string
+    },
+    link?: string,
+    passThresholdPoints?: number,
+    questions?: []
+  }
 }
 
-const MaterialListItem: React.FC<MaterialListItemProps> = ({
-  isLink,
-  isFile,
-}) => {
+const MaterialListItem: React.FC<MaterialListItemProps> = ({ sectionPart }) => {
+
+  const { user } = useUser();
   return (
-    <ListItem
-      divider
+    <Grid component={ListItem}
+      flexDirection={{ xs: 'column', sm: 'row' }}
+      gap={2}
+      paddingX={0}
+      paddingY={2}
+      borderBottom={3}
+      borderColor={'primary.light'}
       sx={{
-        display: "flex",
-        alignItems: "center",
+        alignItems: { xs: 'start', sm: "center" },
         justifyContent: "space-between",
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Grid container alignItems={'center'} >
         <ListItemIcon
           sx={{
-            backgroundColor: `${isLink ? "#027e7b" : ""}`,
+            backgroundColor: `${sectionPart.materialType === 2 ? "#027e7b" : ""}`,
             minWidth: "fit-content",
             mr: 1,
             borderRadius: 1,
             padding: 0.2,
           }}
         >
-          {isLink && <LinkIcon sx={{ color: "#ffffff" }} />}
-          {isFile && <DescriptionIcon sx={{ color: "#FFA726" }} />}
+          {sectionPart.materialType === 2 && <LinkIcon sx={{ color: "#ffffff" }} />}
+          {sectionPart.materialType === 1 && <DescriptionIcon sx={{ color: "#FFA726" }} />}
+          {sectionPart.materialType === 3 && <Quiz />}
         </ListItemIcon>
         {/* {use link here} */}
-        <ListItemText primary="Link x bla bla bla" />
-      </Box>
-      <MarkDone />
-    </ListItem>
+        <Link component={RouterLink} to={sectionPart.file?.path || sectionPart.link || ''} target="_blank" >
+          <ListItemText primary={sectionPart.title} />
+        </Link>
+      </Grid>
+      {
+        (roleNames[user?.role] === 'Staff' && sectionPart.materialType !== 3) &&
+
+        <MarkDone done={false} />
+      }
+
+    </Grid>
   );
 };
 export default MaterialListItem;
