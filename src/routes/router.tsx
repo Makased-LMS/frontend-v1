@@ -21,7 +21,7 @@ const Course = lazy(() => import("../features/courses/Course.tsx"));
 const Quiz = lazy(() => import("../features/quiz/Quiz.tsx"));
 const Departments = lazy(() => import("../pages/Departments.tsx"));
 const Department = lazy(() => import("../features/departments/Department.tsx"));
-const Notifications = lazy(() => import("../pages/Notifications.tsx"))
+const Notifications = lazy(() => import("../pages/Notifications.tsx"));
 
 const router = createBrowserRouter([
   {
@@ -46,10 +46,11 @@ const router = createBrowserRouter([
               { path: "dashboard", element: <Dashboard /> },
               { path: "account", element: <Account /> },
               {
-                path: "notifications", children: [
+                path: "notifications",
+                children: [
                   { index: true, element: <Notifications /> },
                   { path: ":notificationId", element: <NotificationPage /> },
-                ]
+                ],
               },
               // Staff routes
               {
@@ -79,7 +80,8 @@ const router = createBrowserRouter([
                     ],
                   },
                   {
-                    path: "courses", children: [
+                    path: "courses",
+                    children: [
                       { index: true, element: <Courses /> },
 
                       {
@@ -89,7 +91,7 @@ const router = createBrowserRouter([
                           { path: "quiz/:quizId", element: <Quiz /> },
                         ],
                       },
-                    ]
+                    ],
                   },
                 ],
               },
@@ -102,7 +104,8 @@ const router = createBrowserRouter([
                 ),
                 children: [
                   {
-                    path: "my-courses", children: [
+                    path: "my-courses",
+                    children: [
                       { index: true, element: <MyCourses /> },
 
                       {
@@ -112,7 +115,7 @@ const router = createBrowserRouter([
                           { path: "quiz/:quizId", element: <Quiz /> },
                         ],
                       },
-                    ]
+                    ],
                   },
                 ],
               },
@@ -123,9 +126,7 @@ const router = createBrowserRouter([
                     <Outlet />
                   </PrivateRoute>
                 ),
-                children: [
-                  { path: "certificates", element: <Certificates /> }
-                ],
+                children: [{ path: "certificates", element: <Certificates /> }],
               },
             ],
           },
