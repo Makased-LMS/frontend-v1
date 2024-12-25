@@ -8,9 +8,11 @@ import AddSectionDialog from "./AddSectionDialog";
 import CertificateGenerator from "../certificates/CertificateTemplate";
 import { display } from "html2canvas/dist/types/css/property-descriptors/display";
 import { useCourse } from "./useCourse";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../users/useUser";
 import { roleNames } from "../../Enums/roles";
+import { useDispatchCourse } from "./useDispatchCourse";
+import SpinnerLoader from "../../ui/SpinnerLoader";
 
 interface Material {
   id: string;
@@ -26,12 +28,42 @@ interface Category {
 
 const Course: React.FC = () => {
   const { courseId } = useParams()
+  const navigate = useNavigate();
+
   const { user } = useUser();
-  const { course } = useCourse(courseId);
+  const { course, isError, isLoading: fetchingCourse } = useCourse(courseId);
   const dialogs = useDialogs();
+
+
+  const { courseDispatch, isLoading } = useDispatchCourse()
+
   const openAddSection = async () => {
     await dialogs.open(AddSectionDialog, { courseId });
   }
+
+  const handleDelete = async () => {
+    const ok = await dialogs.confirm('Are you sure you want to delete this Course?', {
+      severity: "error",
+      okText: 'Delete',
+      title: 'Delete Material',
+    }
+    )
+
+    if (ok) {
+      await courseDispatch({ action: 'delete', payload: { courseId } }).then(() => navigate('/courses'))
+
+    }
+  }
+
+  const handleEdit = async () => {
+
+  }
+
+  if (isError)
+    return <Navigate replace to={'/courses'} />
+
+  if (fetchingCourse)
+    return <SpinnerLoader />
 
   return (
     <Grid component={Paper} container flexDirection={'column'} size={{ xs: 12 }} spacing={2} padding={2} flex={1}>
@@ -70,16 +102,26 @@ const Course: React.FC = () => {
           }
 
 
+
         </Grid>
         {
-          (roleNames[user?.role] === 'Staff' && course?.status === 'completed') &&
-          <Grid sx={{ display: { xs: 'none', sm: 'flex' } }}>
-            <CertificateGenerator userDetails={{
-              name: `${user.firstName} ${user.lastName}`,
-              course: course.name,
-              date: new Date()
-            }} />
-          </Grid>
+          (roleNames[user?.role] === 'Staff' && course?.status === 'completed') ?
+            <Grid sx={{ display: { xs: 'none', sm: 'flex' } }}>
+              <CertificateGenerator userDetails={{
+                name: `${user.firstName} ${user.lastName}`,
+                course: course.name,
+                date: new Date()
+              }} />
+            </Grid>
+            :
+            <Grid container>
+              <Button color="error" size="small" variant='outlined' onClick={handleDelete}>
+                Delete
+              </Button>
+              <Button color="primary" size="small" variant='contained' onClick={handleEdit}>
+                Edit
+              </Button>
+            </Grid>
         }
 
       </Grid>
@@ -101,7 +143,7 @@ const Course: React.FC = () => {
           </Grid>
         }
         {
-          course?.sections.map((section) => <Category key={section.id} section={section} />)
+          course?.sections?.sort((it1, it2) => it1.index - it2.index).map((section) => <Category key={section.id} section={section} courseId={course.id} />)
         }
 
       </Grid>

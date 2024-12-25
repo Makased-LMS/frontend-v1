@@ -3,13 +3,12 @@ import {
   accordionClasses,
   AccordionDetails,
   accordionDetailsClasses,
-  AccordionSlots,
   AccordionSummary,
-  Box,
   Button,
   Grid2 as Grid,
-  Grow,
+  IconButton,
   List,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import QuizIcon from "@mui/icons-material/Quiz";
@@ -21,6 +20,9 @@ import { useDialogs } from "@toolpad/core";
 import AddMaterialDialog from "../../features/courses/AddMaterialDialog";
 import { useUser } from "../../features/users/useUser";
 import { roleNames } from "../../Enums/roles";
+import { useDispatchCourse } from "../../features/courses/useDispatchCourse";
+import { Delete, Edit } from "@mui/icons-material";
+import AddSectionDialog from "../../features/courses/AddSectionDialog";
 
 interface CategoryProps {
   section: {
@@ -28,16 +30,18 @@ interface CategoryProps {
     title: string
     index: number,
     sectionParts: []
-  }
+  },
+  courseId: string
 }
 
 
-const Category: React.FC<CategoryProps> = ({ section }) => {
+const Category: React.FC<CategoryProps> = ({ section, courseId }) => {
   const dialogs = useDialogs();
 
   const { user } = useUser();
+  const { courseDispatch, isLoading } = useDispatchCourse();
 
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const handleExpansion = () => {
     setExpanded((prevExpanded) => !prevExpanded);
@@ -45,6 +49,23 @@ const Category: React.FC<CategoryProps> = ({ section }) => {
   const openAddMaterial = async () => {
     await dialogs.open(AddMaterialDialog, { sectionId: section.id });
   };
+
+  const handleEdit = async () => {
+    await dialogs.open(AddSectionDialog, { section, courseId });
+  };
+
+  const handleDelete = async () => {
+    const ok = await dialogs.confirm('Are you sure you want to delete this Course?', {
+      severity: "error",
+      okText: 'Delete',
+      title: 'Delete Course',
+    }
+    )
+
+    if (ok) {
+      await courseDispatch({ action: 'deleteSection', payload: { courseId, sectionId: section.id } })
+    }
+  }
   return (
     <Grid container flexDirection={'column'} padding={1.5} border={2} borderRadius={2} borderColor={'primary.light'}>
       <Accordion
@@ -77,13 +98,13 @@ const Category: React.FC<CategoryProps> = ({ section }) => {
             },
         ]}
       >
-        <Box
+        <Grid
+          container
+          flexDirection={{ sx: 'column', sm: 'row' }}
           sx={{
             backgroundColor: "primary.light",
-            // padding: 1,
-            display: "flex",
             alignItems: "center",
-            justifyContent: "",
+            justifyContent: "space-between",
             // mb: 1,
           }}
         >
@@ -103,21 +124,39 @@ const Category: React.FC<CategoryProps> = ({ section }) => {
             aria-controls="panel2-content"
             id="panel2-header"
           >
-            <Typography
-              variant="h6"
-              sx={{ ml: 1 }}
-              fontWeight="bold"
-              color="primary.main"
-            >
-              {section.title}
-            </Typography>
+            <Grid container size={12} alignItems={'center'} justifyContent={'space-between'}>
+              <Typography
+                variant="h6"
+                sx={{ ml: 1 }}
+                fontWeight="bold"
+                color="primary.main"
+              >
+                {section.title}
+              </Typography>
+              { //TODO: fixing view
+                roleNames[user?.role] !== 'Staff' &&
+                <Grid container spacing={1}>
+                  <Tooltip title={'Edit'}>
+                    <IconButton onClick={handleEdit} disabled={isLoading} >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={'Delete'}>
+                    <IconButton color="error" onClick={handleDelete} disabled={isLoading} >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              }
+            </Grid>
           </AccordionSummary>
-        </Box>
+
+        </Grid>
         <AccordionDetails>
           {/* Materials : )  */}
           <List sx={{ padding: 0 }}>
             {
-              section.sectionParts?.map((sectionPart) => <MaterialListItem key={sectionPart.id} sectionPart={sectionPart} />)
+              section.sectionParts?.sort((it1, it2) => it1.index - it2.index).map((sectionPart) => <MaterialListItem key={sectionPart.id} sectionPart={sectionPart} />)
             }
 
           </List>

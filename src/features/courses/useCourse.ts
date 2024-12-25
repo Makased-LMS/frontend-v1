@@ -6,7 +6,6 @@ export function useCourse(courseId: string) {
     const { isFetching, data: course, error, isError } = useQuery({
         queryKey: ["course", courseId],
         queryFn: async () => (await getCourse(courseId)).data,
-        throwOnError: true
     });
 
     return { isLoading: isFetching, course, error, isError };

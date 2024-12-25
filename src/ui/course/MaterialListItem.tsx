@@ -1,15 +1,19 @@
 import React from "react";
-import { Grid2 as Grid, Link, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Button, Grid2 as Grid, IconButton, Link, ListItem, ListItemIcon, ListItemText, Tooltip } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import MarkDone from "./MarkDone";
 import DescriptionIcon from "@mui/icons-material/Description";
-import { Quiz } from "@mui/icons-material";
+import { Delete, Edit, Quiz } from "@mui/icons-material";
 import { useUser } from "../../features/users/useUser";
 import { roleNames } from "../../Enums/roles";
 import { Link as RouterLink } from "react-router-dom";
+import { useDialogs } from "@toolpad/core";
+import { useDispatchCourse } from "../../features/courses/useDispatchCourse";
+import AddMaterialDialog from "../../features/courses/AddMaterialDialog";
 interface MaterialListItemProps {
   sectionPart: {
     id: number,
+    sectionId: number,
     title: string,
     index: number,
     materialType: number,
@@ -27,8 +31,28 @@ interface MaterialListItemProps {
 }
 
 const MaterialListItem: React.FC<MaterialListItemProps> = ({ sectionPart }) => {
-
   const { user } = useUser();
+  const { courseDispatch, isLoading } = useDispatchCourse();
+
+  const dialogs = useDialogs();
+
+  const handleEdit = async () => {
+    await dialogs.open(AddMaterialDialog, { sectionPart });
+  };
+
+
+  const handleDelete = async () => {
+    const ok = await dialogs.confirm('Are you sure you want to delete this material?', {
+      severity: "error",
+      okText: 'Delete',
+      title: 'Delete Material',
+    }
+    )
+
+    if (ok) {
+      await courseDispatch({ action: 'deleteSectionPart', payload: { sectionPartId: sectionPart.id, sectionId: sectionPart.sectionId } })
+    }
+  }
   return (
     <Grid component={ListItem}
       flexDirection={{ xs: 'column', sm: 'row' }}
@@ -65,6 +89,22 @@ const MaterialListItem: React.FC<MaterialListItemProps> = ({ sectionPart }) => {
         (roleNames[user?.role] === 'Staff' && sectionPart.materialType !== 3) &&
 
         <MarkDone done={false} />
+      }
+
+      {
+        roleNames[user?.role] !== 'Staff' &&
+        <Grid container spacing={1}>
+          <Tooltip title={'Edit'}>
+            <IconButton size="small" onClick={handleEdit} disabled={isLoading} >
+              <Edit />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={'Delete'}>
+            <IconButton size="small" color="error" onClick={handleDelete} disabled={isLoading} >
+              <Delete />
+            </IconButton>
+          </Tooltip>
+        </Grid>
       }
 
     </Grid>

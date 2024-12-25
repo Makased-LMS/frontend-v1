@@ -3,9 +3,12 @@ import SquaredCourseCard from "../ui/SquaredCourseCard";
 import { useDialogs } from "@toolpad/core";
 import AddCourseDialog from "../features/courses/AddCourseDialog";
 import { useCourses } from "../features/courses/useCourses";
+import { useUser } from "../features/users/useUser";
+import { roleNames } from "../Enums/roles";
 
 function Courses() {
   const dialogs = useDialogs()
+  const { user } = useUser();
   const { courses, isError, isLoading: fetchingCourses } = useCourses();
 
   const openCoursesDialog = () => {
@@ -13,12 +16,14 @@ function Courses() {
   }
 
   return (
-    <Grid component={Paper} container flexDirection={'column'} padding={2} spacing={3}>
+    <Grid component={Paper} container flexDirection={'column'} padding={2} spacing={3} flex={1}>
       <Grid container justifyContent={'space-between'}>
         <Typography variant="h4" color="primary.main">
           Courses
         </Typography>
-        <Button variant="contained" onClick={openCoursesDialog}>Add Course</Button>
+        {
+          roleNames[user?.role] !== 'Staff' && <Button variant="contained" onClick={openCoursesDialog}>Add Course</Button>
+        }
       </Grid>
 
       <Divider />
@@ -41,6 +46,12 @@ function Courses() {
             }}
           />
         ))}
+
+        {
+          courses?.length === 0 && <Typography variant="h6">
+            No courses yet!🤌
+          </Typography>
+        }
       </Grid>
     </Grid>
   );

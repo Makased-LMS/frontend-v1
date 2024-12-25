@@ -51,7 +51,7 @@ export async function getSection(courseId: string, sectionId: string){
     return await axiosAPI.get(`/courses/${courseId}/sections/${sectionId}`);
 }
 
-export async function editSection(courseId: string, sectionId: string, payload){
+export async function editSection(courseId: string, sectionId: string, payload){ // TODO: verifying that it patches not posts
     return await axiosAPI.put(`/courses/${courseId}/sections/${sectionId}`, payload);
 }
 
@@ -65,8 +65,6 @@ export async function deleteSection(courseId: string, sectionId: string){
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function addSectionPart(sectionId: string, payload){
-    console.log(payload);
-    
     const { materialType, file, title, link, questions } = payload;
     
     let newPayload = {
@@ -106,8 +104,40 @@ export async function getSectionPart(sectionId: string, sectionPartId: string){
     return await axiosAPI.get(`/sections/${sectionId}/parts/${sectionPartId}`);
 }
 
-export async function editSectionPart(sectionId: string, sectionPartId: string, payload){
-    return await axiosAPI.put(`/sections/${sectionId}/parts/${sectionPartId}`, payload);
+export async function editSectionPart(sectionId: string, sectionPartId: string, payload){ // TODO: Error 500
+    const { materialType, file, title, link, questions } = payload;
+    
+    let newPayload = {
+        title,
+        materialType
+    }
+
+    if(materialType === 'File' && file){
+        const fileId : string =  (await addFile(file)).data.fileId
+        newPayload = {
+            ...newPayload,
+            fileId
+        }
+    }
+
+    else if(materialType === 'Link'){
+        newPayload = {
+            ...newPayload,
+            link
+        }
+    }
+    else if(materialType === 'Exam'){
+        newPayload = {
+            ...newPayload,
+            questions
+        }
+    }
+
+    else{
+        return new AxiosError('Invalid Material Type')
+    }
+
+    return await axiosAPI.put(`/sections/${sectionId}/parts/${sectionPartId}`, newPayload);
 }
 
 export async function deleteSectionPart(sectionId: string, sectionPartId: string){

@@ -6,12 +6,11 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 function AddCourseDialog({ payload, open, onClose }) {
     const { register, handleSubmit, setValue, formState: { isLoading, errors: formErrors } } = useForm();
-    const { courseDispatch, isError, isLoading: dispatchingCourse } = useDispatchCourse();
+    const { courseDispatch, isLoading: dispatchingCourse } = useDispatchCourse();
 
     const handleAddCourse = async (data) => {
         if (!data)
             return;
-
 
         await courseDispatch({
             action: 'add', payload: {
@@ -22,10 +21,7 @@ function AddCourseDialog({ payload, open, onClose }) {
                     expirationMonths: data.expiration
                 }
             }
-        })
-
-        if (!isError)
-            onClose();
+        }).then(() => onClose());
     }
     return (
         <Dialog component='form' onSubmit={handleSubmit(handleAddCourse)} fullWidth maxWidth={'sm'} open={open} onClose={() => onClose()}>
