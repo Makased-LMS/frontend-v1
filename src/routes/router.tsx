@@ -12,9 +12,6 @@ const Account = lazy(() => import("../pages/Account.tsx"));
 const Users = lazy(() => import("../pages/Users.tsx"));
 const Dashboard = lazy(() => import("../pages/Dashboard/Dashboard.tsx"));
 const Courses = lazy(() => import("../pages/Courses.tsx"));
-const MyCourses = lazy(() => import("../pages/MyCourses.tsx"));
-const Certificates = lazy(() => import("../pages/Certificates.tsx"));
-const MyCertificates = lazy(() => import("../pages/MyCertificates.tsx"));
 const ForgotPassword = lazy(() => import("../pages/ForgotPassword.tsx"));
 const ResetPassword = lazy(() => import("../pages/ResetPassword.tsx"));
 const Course = lazy(() => import("../features/courses/Course.tsx"));
@@ -53,16 +50,16 @@ const router = createBrowserRouter([
                 ],
               },
               // Staff routes
-              {
-                element: (
-                  <PrivateRoute allowedRoles={["Staff"]}>
-                    <Outlet />
-                  </PrivateRoute>
-                ),
-                children: [
-                  { path: "my-certificates", element: <MyCertificates /> },
-                ],
-              },
+              // {
+              //   element: (
+              //     <PrivateRoute allowedRoles={["Staff"]}>
+              //       <Outlet />
+              //     </PrivateRoute>
+              //   ),
+              //   children: [
+
+              //   ],
+              // },
               // Admin routes
               {
                 element: (
@@ -104,9 +101,10 @@ const router = createBrowserRouter([
                 ),
                 children: [
                   {
-                    path: "my-courses",
-                    children: [
-                      { index: true, element: <MyCourses /> },
+
+                    path: "my-courses", children: [
+                      { index: true, element: <Courses /> },
+
 
                       {
                         path: ":courseId",
@@ -119,15 +117,18 @@ const router = createBrowserRouter([
                   },
                 ],
               },
-              // SubAdmin & Admin routes
-              {
-                element: (
-                  <PrivateRoute allowedRoles={["Admin", "SubAdmin"]}>
-                    <Outlet />
-                  </PrivateRoute>
-                ),
-                children: [{ path: "certificates", element: <Certificates /> }],
-              },
+
+              // // SubAdmin & Admin routes
+              // {
+              //   element: (
+              //     <PrivateRoute allowedRoles={["Admin", "SubAdmin"]}>
+              //       <Outlet />
+              //     </PrivateRoute>
+              //   ),
+              //   children: [
+              //     {  }
+              //   ],
+              // },
             ],
           },
         ],
@@ -142,7 +143,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        element: <PageNotFound />,
+        element: <PageNotFound />, //TODO: implement 404 page, unauthorized pages
         path: "*",
       },
     ],
