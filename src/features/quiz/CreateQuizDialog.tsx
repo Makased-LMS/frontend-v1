@@ -48,6 +48,26 @@ function CreateQuizDialog({ payload, open, onClose }) {
         }
     }
 
+    useEffect(() => {
+        localStorage.setItem('questionsDraft', JSON.stringify(
+            [
+                {
+                    "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos labore dolore tempore eligendi facilis temporibus error delectus, accusamus, beatae eveniet veniam. Possimus necessitatibus eius, molestias molestiae qui quisquam tempore libero!", "type": "Multiple choice", "points": 10
+                },
+                {
+                    "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos labore dolore tempore eligendi facilis temporibus error delectus, accusamus, beatae eveniet veniam. Possimus necessitatibus eius, molestias molestiae qui quisquam tempore libero!", "type": "Multiple choice", "points": 20
+
+                },
+                {
+                    "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos labore dolore tempore eligendi facilis temporibus error delectus, accusamus, beatae eveniet veniam. Possimus necessitatibus eius, molestias molestiae qui quisquam tempore libero!", "type": "Multiple choice", "points": 30
+                },
+                {
+                    "text": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dignissimos labore dolore tempore eligendi facilis temporibus error delectus, accusamus, beatae eveniet veniam. Possimus necessitatibus eius, molestias molestiae qui quisquam tempore libero!", "type": "Multiple choice", "points": 40
+
+                }
+            ]))
+    }, [])
+
     return (
         <Dialog component='form' onSubmit={handleSubmit(handleAddQuiz)} fullWidth maxWidth={'lg'} open={open} >
             <Grid container justifyContent={'space-between'} borderBottom={2} borderColor={'primary.main'} marginBottom={2} padding={2}>
