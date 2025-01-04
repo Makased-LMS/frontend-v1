@@ -10,21 +10,58 @@ import {
   Box,
   Grid2,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Navigate, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useCurrentQuestion } from "../quizSession/useCurrentQuestion";
+import { getQuizSession } from "../../services/apiQuizSession";
+import SpinnerLoader from "../../ui/SpinnerLoader";
+import QuizSessionEnded from "./QuizSessionEnded";
+import { useDispatchQuiz } from "../quizSession/useDispatchQuiz";
+import { useDialogs } from "@toolpad/core";
 
 const Quiz: React.FC = () => {
-  const { quizId } = useParams();
+  const { quizId, courseId } = useParams();
+  const quizSession = useLoaderData();
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null)
+  const [questionId, setQuestionId] = useState(quizSession?.questions[questionIndex].id)
+  const { quizDispatch, isLoading } = useDispatchQuiz()
+  const { currentQuestion } = useCurrentQuestion({ quizId, questionId });
+  const navigate = useNavigate();
+
+  const dialogs = useDialogs()
+
   const [timeLeft, setTimeLeft] = useState(300); // todo bring time from API
 
-  useEffect(() => {
-    const timer =
-      timeLeft > 0 && setInterval(() => setTimeLeft(timeLeft - 1), 1000);
-    return () => clearInterval(timer as ReturnType<typeof setInterval>);
-  }, [timeLeft]);
+  const handleSelectAnswer = (e) => {
+    const val = e.target.value;
+    setSelectedAnswer(val)
+  }
 
-  const handleSubmit = () => {
-    // todo result page
+  const handleSubmit = async () => {
+    if (selectedAnswer)
+      quizDispatch({ action: 'submitAnswer', payload: { quizId, questionId, answer: selectedAnswer } }).then(async () => {
+
+
+        if (questionIndex < quizSession.questions.length - 1)
+          setQuestionIndex(val => val + 1)
+        else {
+          const confirm = await dialogs.confirm('Are you sure you want to submit quiz?', {
+            title: 'Submit Quiz',
+            okText: 'Submit',
+            cancelText: 'Cancel'
+          })
+          if (confirm)
+            await quizDispatch({ action: 'finish', payload: { quizId } }).then(() => navigate(`/courses/${courseId}`, { replace: true }))
+        }
+      })
   };
+
+  useEffect(() => {
+    setQuestionId(quizSession?.questions[questionIndex].id)
+  }, [questionIndex, setQuestionId, quizSession])
+
+  if (!quizSession)
+    return <QuizSessionEnded />
 
   return (
     <Box
@@ -41,6 +78,7 @@ const Quiz: React.FC = () => {
         container
         spacing={2}
         direction="column"
+        size={8}
         sx={{ boxShadow: 4, p: 5, borderRadius: 2 }}
       >
         <Grid2 container xs={12} justifyContent="flex-end">
@@ -62,25 +100,23 @@ const Quiz: React.FC = () => {
         </Grid2>
         <Grid2>
           <Typography variant="h5" gutterBottom>
-            Question 1
+            Question {+questionIndex + 1}
           </Typography>
           <Typography variant="body1" gutterBottom>
-            It is possible to get a Liberal Arts degree from Berkshire Community
-            College in two years.
+            <div dangerouslySetInnerHTML={{ __html: currentQuestion?.text }} />
           </Typography>
           <FormControl component="fieldset" fullWidth>
             <FormLabel component="legend">Select one:</FormLabel>
             <RadioGroup
               aria-label="degree"
-              defaultValue="true"
               name="radio-buttons-group"
+              value={selectedAnswer}
+              onChange={handleSelectAnswer}
             >
-              <FormControlLabel value="true" control={<Radio />} label="True" />
-              <FormControlLabel
-                value="false"
-                control={<Radio />}
-                label="False"
-              />
+              {
+                currentQuestion?.choices.map((choice) => <FormControlLabel value={choice.id} control={<Radio />} label={choice.text} />)
+              }
+
             </RadioGroup>
           </FormControl>
         </Grid2>
@@ -95,3 +131,16 @@ const Quiz: React.FC = () => {
 };
 
 export default Quiz;
+
+export async function loader({ params }) {
+  const { quizId } = params;
+  let quizSession;
+  try {
+    quizSession = (await getQuizSession(quizId)).data;
+  }
+  catch (err) {
+    if (err.message.status === 409)
+      quizSession = null
+  }
+  return quizSession;
+}

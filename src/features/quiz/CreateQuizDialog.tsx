@@ -224,7 +224,7 @@ function CreateQuizDialog({ payload, open, onClose }) {
                                                 {question.preview || toText(question.text)}
                                             </TableCell>
                                             <TableCell >
-                                                {question.choices[0].text === 'False' ? 'True or False' : 'Multiple Choices'}
+                                                {(question.choices.length === 2 && question.choices[0].text === 'False') ? 'True or False' : 'Multiple Choices'}
                                             </TableCell>
                                             <TableCell sx={{ textAlign: 'center' }}>
                                                 {question.points}

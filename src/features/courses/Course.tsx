@@ -58,7 +58,6 @@ const Course: React.FC = () => {
 
     if (ok) {
       await courseDispatch({ action: 'delete', payload: { courseId } }).then(() => navigate('/courses'))
-
     }
   }
 

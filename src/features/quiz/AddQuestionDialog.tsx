@@ -24,7 +24,7 @@ const extractQuestionType = (choices) => {
     if (!choices)
         return 0;
 
-    return choices[0].text === 'False' ? 0 : 1
+    return (choices.length === 2 && choices[0].text === 'False') ? 0 : 1
 }
 
 const extractChoices = (choices) => {
@@ -77,6 +77,8 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
         if (!checkAvailabilty())
             return;
 
+        console.log(payload?.question.choices);
+
         let question = {
             text,
             preview,
@@ -88,7 +90,7 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
             id: payload?.question.id || 0,
             choices: answers.map((ans, ind) => {
                 return {
-                    id: 0,
+                    id: payload?.question.choices[ind]?.id || 0,
                     text: ans,
                     isCorrect: ind === correctAnswer
                 }

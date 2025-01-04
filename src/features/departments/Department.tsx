@@ -1,6 +1,6 @@
 import { Add } from '@mui/icons-material';
 import { Button, Grid2 as Grid, Link, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-
+import { Link as RouterLink } from 'react-router-dom'
 import { useDialogs } from '@toolpad/core';
 import ActionsMenu from '../../ui/ActionsMenu';
 import { Navigate, useParams } from "react-router-dom"
@@ -60,7 +60,10 @@ function Department() {
         return <Navigate to='/404' />
 
     return (
-        <Grid component={Paper} container flexDirection={'column'} size={{ xs: 12 }} padding={2} spacing={5} flex={1}>
+        <Grid component={Paper} container flexDirection={'column'} size={{ xs: 12 }} padding={2} spacing={2} flex={1}>
+            <Link component={RouterLink} to="/departments">
+                ⇐ Back to departments
+            </Link>
             <Grid container justifyContent={'space-between'} padding={1} sx={{
                 flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center'
