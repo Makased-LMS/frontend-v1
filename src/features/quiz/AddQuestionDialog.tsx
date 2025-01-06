@@ -80,8 +80,8 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
         console.log(payload?.question.choices);
 
         let question = {
-            text,
-            preview,
+            text: text.trim(),
+            preview: preview.trim(),
             points: Number(points),
             file: image,
             correctAnswer,
@@ -91,7 +91,7 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
             choices: answers.map((ans, ind) => {
                 return {
                     id: payload?.question.choices[ind]?.id || 0,
-                    text: ans,
+                    text: ans.trim(),
                     isCorrect: ind === correctAnswer
                 }
             })
@@ -109,7 +109,7 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
     }
 
     const handleAnswerChange = (e, index) => {
-        const val = e.target.value;
+        const val = e.target.value.trimStart();
 
         setAnswers((ans) =>
             ans.map((item, ind) => {
@@ -198,8 +198,8 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
                             </Typography>
                             <Grid container minHeight={120} marginBottom={5}>
                                 <ReactQuill theme="snow" value={text} onChange={(value, delta, source, editor) => {
-                                    setPreview(editor.getText())
-                                    setText(editor.getHTML())
+                                    setPreview(editor.getText().trimStart())
+                                    setText(editor.getHTML().trimStart())
                                 }} style={{ width: '100%' }} />
                             </Grid>
                             {
