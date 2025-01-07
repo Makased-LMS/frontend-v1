@@ -19,7 +19,13 @@ const QuizNavigation: React.FC = () => {
   };
 
   return (
-    <Grid2 container spacing={1} width={"fit-content"}>
+    <Grid2
+      container
+      // padding={1}
+      spacing={1}
+      width={"fit-content"}
+      // sx={{ border: "3px solid red" }} not that good
+    >
       {quizItems.map((item) => (
         <Grid2 key={item.id}>
           <Button
