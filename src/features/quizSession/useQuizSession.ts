@@ -5,7 +5,7 @@ export function useQuizSession(quizId: string) {
     const { isFetching, data: quizSession, error, isError } = useQuery({
         queryKey: ["quizSession", quizId],
         queryFn: async() => (await getQuizSession(quizId)).data,
-        throwOnError: true
+        throwOnError: true,
     });
 
     return { isLoading: isFetching, quizSession, error, isError };

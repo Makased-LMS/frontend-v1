@@ -181,6 +181,11 @@ export async function getSectionPart(sectionId: string, sectionPartId: string){
     return await axiosAPI.get(`/sections/${sectionId}/parts/${sectionPartId}`);
 }
 
+export async function getExamOverview(examId){
+    return await axiosAPI.get(`/exams/${examId}`);
+}
+
+
 export async function editSectionPart(sectionId: string, sectionPartId: string, payload){
     const { materialType, file, title, link, questions } = payload;
     

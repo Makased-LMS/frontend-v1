@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Grid2 as Grid, IconButton, Link, ListItem, ListItemIcon, ListItemText, Tooltip, Typography } from "@mui/material";
+import { Button, Chip, FormHelperText, Grid2 as Grid, IconButton, Link, ListItem, ListItemIcon, ListItemText, Tooltip, Typography } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import MarkDone from "./MarkDone";
 import { Delete, Edit, ExpandLess, ExpandMore, Quiz } from "@mui/icons-material";
@@ -117,17 +117,40 @@ const MaterialListItem: React.FC<MaterialListItemProps> = ({ sectionPart }) => {
         }
         {
           (roleNames[user?.role] === 'Staff' && sectionPart.materialType === 3) &&
-          <Button variant="outlined"
-            size={'small'}
-            sx={{
-              borderRadius: 5,
-              border: 2
-            }}
-          >
+          <Grid container spacing={2} alignItems={'center'}>
+            {
+              sectionPart.exam.status !== 3 &&
+              <>
+                <FormHelperText>
+                  Your latest grade: {` ${sectionPart.exam.lastGottenGradePoints} `} / {` ${sectionPart.exam.maxGradePoints}`}
+                </FormHelperText>
+
+                {
+                  sectionPart.exam.lastGottenGradePoints >= sectionPart.exam.passThresholdPoints ?
+                    <Chip label='Passed' color="success" size="small" />
+                    :
+                    <Chip label='Failed' color="error" size='small' />
+
+                }
+
+              </>
+            }
             <Link component={RouterLink} to={`quiz/${sectionPart.exam.id}`} target="_blank" underline="none">
-              Start Quiz
+              <Button variant="outlined"
+                size={'small'}
+                sx={{
+                  borderRadius: 5,
+                  border: 2
+                }}
+              >
+                {
+                  sectionPart.exam.status === 3 ? "Start " : "Retake "
+                }
+                Quiz
+              </Button>
             </Link>
-          </Button>
+          </Grid>
+
         }
         {
           roleNames[user?.role] !== 'Staff' &&

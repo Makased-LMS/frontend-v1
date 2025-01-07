@@ -1,11 +1,15 @@
 import { Button, Grid2 as Grid, Link, Paper, Typography } from "@mui/material";
-import { useState } from "react";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { checkStartedQuiz } from "../../services/apiQuizSession";
 import { useDispatchQuiz } from "../quizSession/useDispatchQuiz";
+import { getExamOverview } from "../../services/apiCourses";
 function StartQuiz() {
-    const started = useLoaderData();
+    const data = useLoaderData();
+    const { exam, started } = data;
+    console.log(exam, started);
+
+
     const { courseId, quizId } = useParams();
     const { quizDispatch } = useDispatchQuiz()
     const navigate = useNavigate();
@@ -39,16 +43,33 @@ function StartQuiz() {
                             :
                             <>
                                 <Typography fontSize={18}>
-                                    ● You have (sectionPart.exam.durationMinutes) to finish the quiz.
+                                    ● You have
+                                    <strong>
+                                        {` ${exam.durationMinutes} `}
+                                    </strong>
+                                    minutes to finish the quiz.
                                 </Typography>
                                 <Typography fontSize={18}>
-                                    ● The quiz consists of (sectionPart.exam.questions.length()) questions.
+                                    ● The quiz consists of
+                                    <strong>
+                                        {` ${exam.questionsCount} `}
+                                    </strong>
+                                    questions.
+                                </Typography>
+                                <Typography fontSize={18}>
+                                    ● You should earn <strong>
+                                        {` ${exam.passThresholdPoints} `}
+                                    </strong>
+                                    points out of
+                                    <strong>
+                                        {` ${exam.maxGradePoints} `}
+                                    </strong>
+                                    to pass this quiz.
                                 </Typography>
                                 <Typography fontSize={16}>
                                     ● Once you click Start, the timer will start counting down.
                                 </Typography></>
                     }
-
                 </Grid>
                 <Grid container justifyContent={'center'} marginTop={4}>
                     {
@@ -73,5 +94,10 @@ export default StartQuiz
 export async function loader({ params }) {
     const { quizId } = params;
     const started = (await checkStartedQuiz(quizId)).data.isStarted;
-    return started;
+    const exam = (await getExamOverview(quizId)).data;
+    const data = {
+        started,
+        exam
+    }
+    return data;
 }

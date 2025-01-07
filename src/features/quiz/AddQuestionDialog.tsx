@@ -260,7 +260,7 @@ function AddQuestionDialog({ payload, open, onClose }) {//TODO: handle data when
                                             <Typography variant="h6" width={24}>
                                                 {+index + 1}.
                                             </Typography>
-                                            <TextField multiline value={answers[index]} disabled={questionType === 0} onChange={(e) => handleAnswerChange(e, index)} sx={{ width: '80%' }} />
+                                            <TextField multiline value={answers[index]} disabled={questionType === 0} onChange={(e) => handleAnswerChange(e, index)} sx={{ width: '70%' }} />
 
 
                                             {

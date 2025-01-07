@@ -5,7 +5,6 @@ import PublicRoute from "../ui/PublicRoute";
 import AppLayout from "../ui/AppLayout";
 import ErrorBoundary from "../Error/ErrorBoundary.tsx";
 import { loader as startQuizLoader } from "../features/quiz/StartQuiz.tsx";
-import { loader as quizLoader } from "../features/quiz/Quiz2.tsx";
 
 
 const PageNotFound = lazy(() => import("../pages/PageNotFound.tsx"));
@@ -22,7 +21,7 @@ const Department = lazy(() => import("../features/departments/Department.tsx"));
 const Unauthorized = lazy(() => import("../pages/Unauthorized.tsx"));
 const Notifications = lazy(() => import("../pages/Notifications.tsx"));
 const StartQuiz = lazy(() => import("../features/quiz/StartQuiz.tsx"));
-const Quiz = lazy(() => import("../features/quiz/Quiz2.tsx"));
+const Quiz = lazy(() => import("../features/quiz/Quiz.tsx"));
 const NotificationPage = lazy(() => import("../features/notifications/NotificationPage.tsx"));
 
 const router = createBrowserRouter([
@@ -68,7 +67,7 @@ const router = createBrowserRouter([
                         children: [
                           { index: true, element: <StartQuiz />, loader: startQuizLoader },
                           {
-                            path: "session", element: <Quiz />, loader: quizLoader
+                            path: "session", element: <Quiz />
                           }
                         ]
                       },
